@@ -1,5 +1,6 @@
 package pl.mateusz.csgoteamgenerator;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -14,19 +15,40 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE DRINK(" +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "NAME TEXT," +
+                "ROLE TEXT)");
+        updateDatabase(db, 0);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        updateDatabase(db, oldVersion);
     }
 
 
-    public void updateDatabase(SQLiteDatabase sqLiteDatabase, int oldVersion) {
-
+    private void updateDatabase(SQLiteDatabase db, int oldVersion) {
+        switch (oldVersion) {
+            case 0:
+                addRecord(db, "Mynio", Role.IGL);
+                addRecord(db, "Sidney", Role.IGL);
+                addRecord(db, "Snax", Role.Rifler);
+                addRecord(db, "Furlan", Role.Rifler);
+                addRecord(db, "oskarish", Role.Rifler);
+                addRecord(db, "phr", Role.Rifler);
+                addRecord(db, "MICHU", Role.Rifler);
+                addRecord(db, "GruBy", Role.Rifler);
+                addRecord(db, "Snatchie", Role.Sniper);
+                addRecord(db, "Markoś", Role.Sniper);
+        }
     }
 
-    
+    private void addRecord(SQLiteDatabase db, String name, Role role) {
+        ContentValues values = new ContentValues();
+        values.put("NAME", name);
+        values.put("ROLE", role.toString());
+        db.insert("PLAYERS", null, values);
+    }
 }
