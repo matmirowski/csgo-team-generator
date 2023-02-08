@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single" >
+        <item
+            android:id="@+id/nav_generate_team"
+            android:icon="@android:drawable/sym_action_email"
+            android:title="@string/generate_team"
+            android:checked="true" />
+        <item
+            android:id="@+id/nav_player_list"
+            android:icon="@android:drawable/sym_action_email"
+            android:title="@string/player_list" />
+        <item
+            android:id="@+id/nav_add_player"
+            android:icon="@android:drawable/sym_action_email"
+            android:title="@string/add_player" />
+    </group>
+
+    <item android:title="@string/misc" >
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:title="@string/settings"
+                android:icon="@android:drawable/sym_action_email" />
+        </menu>
+    </item>
+
+</menu>
