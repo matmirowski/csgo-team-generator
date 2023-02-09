@@ -16,7 +16,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE DRINK(" +
+        db.execSQL("CREATE TABLE PLAYERS(" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "NAME TEXT," +
                 "ROLE TEXT)");
