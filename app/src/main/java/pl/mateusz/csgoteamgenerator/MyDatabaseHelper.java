@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     private static final String DB_NAME = null; //TODO
 
     public MyDatabaseHelper(@Nullable Context context) {
@@ -60,26 +60,26 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             addRecord(db, "Hades_(Polish_player)", Role.Sniper);
         }
         if (oldVersion < 2) { // players with no photo on liquipedia
-//            addRecord(db, "Mynio", Role.IGL);
-//            addRecord(db, "SNx", Role.IGL);
-//            addRecord(db, "LunAtic", Role.IGL);
-//            addRecord(db, "Markoś", Role.Sniper);
-//            addRecord(db, "M4tthi", Role.Sniper);
-//            addRecord(db, "MASKED", Role.Sniper);
-//            addRecord(db, "Layner", Role.Sniper);
-//            addRecord(db, "Fr3nd", Role.Sniper);
-//            addRecord(db, "Kylar", Role.Rifler);
-//            addRecord(db, "Reiko", Role.Rifler);
-//            addRecord(db, "Jedqr", Role.Rifler);
-//            addRecord(db, "Ponczek", Role.Rifler);
-//            addRecord(db, "Bnox", Role.Rifler);
-//            addRecord(db, "ZaNNN", Role.Rifler);
-//            addRecord(db, "Iso", Role.Rifler);
-//            addRecord(db, "Casey", Role.Rifler);
-//            addRecord(db, "OLIMP", Role.Rifler);
-//            addRecord(db, "Darko", Role.Rifler);
-//            addRecord(db, "Prism", Role.Rifler);
-//            addRecord(db, "Enzo", Role.Rifler);
+            addRecord(db, "Mynio", Role.IGL);
+            addRecord(db, "SNx", Role.IGL);
+            addRecord(db, "LunAtic", Role.IGL);
+            addRecord(db, "Markoś", Role.Sniper);
+            addRecord(db, "M4tthi", Role.Sniper);
+            addRecord(db, "MASKED", Role.Sniper);
+            addRecord(db, "Layner", Role.Sniper);
+            addRecord(db, "Fr3nd", Role.Sniper);
+            addRecord(db, "Kylar", Role.Rifler);
+            addRecord(db, "Reiko", Role.Rifler);
+            addRecord(db, "Jedqr", Role.Rifler);
+            addRecord(db, "Ponczek", Role.Rifler);
+            addRecord(db, "Bnox", Role.Rifler);
+            addRecord(db, "ZaNNN", Role.Rifler);
+            addRecord(db, "Iso", Role.Rifler);
+            addRecord(db, "Casey", Role.Rifler);
+            addRecord(db, "OLIMP", Role.Rifler);
+            addRecord(db, "Darko", Role.Rifler);
+            addRecord(db, "Prism", Role.Rifler);
+            addRecord(db, "Enzo", Role.Rifler);
         }
     }
 

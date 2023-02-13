@@ -84,18 +84,22 @@ public class GenerateFragment extends Fragment {
                 db.close();
                 return finalResults;
             } catch (SQLiteException e) {
-                Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT)
-                        .show();
+                Log.e("ERR", "Error while getting names from database", e);
                 return null;
             }
         }
 
         @Override
         protected void onPostExecute(String[] names) {
-            for (int i = 0; i < 5; i++) {
-                Log.d("INFO", "Generated playername: " + names[i]);
-                new PlayerImageURLTask().execute(new TaskParams(names[i], i));
-                playerTextViews[i].setText(names[i]);
+            if (names != null) {
+                for (int i = 0; i < 5; i++) {
+                    Log.d("INFO", "Generated playername: " + names[i]);
+                    new PlayerImageURLTask().execute(new TaskParams(names[i], i));
+                    playerTextViews[i].setText(names[i]);
+                }
+            } else {
+                Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT)
+                        .show();
             }
         }
     }
@@ -119,12 +123,13 @@ public class GenerateFragment extends Fragment {
                 String strMetaImg = doc.getElementsByTag("meta").get(12).toString();
                 Log.d("INFO", "player meta: " + strMetaImg);
                 int beginIndex = strMetaImg.indexOf("https");
+                // if there is no player photo on liquipedia, default hltv photo is being used
+                if (beginIndex == -1)
+                    return "https://www.hltv.org/img/static/player/player_silhouette.png";
                 int endIndex = strMetaImg.length() - 2;
                 return strMetaImg.substring(beginIndex, endIndex);
             } catch (IOException e) {
                 Log.e("EXC", "Error while getting image url from player profile", e);
-                Toast.makeText(getActivity(), "Unable to load images", Toast.LENGTH_SHORT)
-                        .show();
                 return null;
             }
         }
@@ -134,6 +139,9 @@ public class GenerateFragment extends Fragment {
             if (imageURL != null) {
                 Log.d("INFO", "Index URL: " + index);
                 new PlayerImageToDrawableTask().execute(new TaskParams(imageURL, index));
+            } else {
+                Toast.makeText(getActivity(), "Unable to load images", Toast.LENGTH_SHORT)
+                        .show();
             }
         }
     }
@@ -150,8 +158,6 @@ public class GenerateFragment extends Fragment {
                 return Drawable.createFromStream(is, "src name");
             } catch (Exception e) {
                 Log.e("EXC", "Error while getting drawable from image url", e);
-                Toast.makeText(getActivity(), "Unable to load images", Toast.LENGTH_SHORT)
-                        .show();
                 return null;
             }
         }
@@ -161,9 +167,9 @@ public class GenerateFragment extends Fragment {
             if (drawable != null) {
                 Log.d("INFO", "Index IMG: " + index);
                 playerImageViews[index].setImageDrawable(drawable);
-                //ImageView snaxImg = getActivity().findViewById(R.id.image_player1);
-                //snaxImg.setImageDrawable(drawable);
-
+            } else {
+                Toast.makeText(getActivity(), "Unable to load images", Toast.LENGTH_SHORT)
+                        .show();
             }
         }
     }
