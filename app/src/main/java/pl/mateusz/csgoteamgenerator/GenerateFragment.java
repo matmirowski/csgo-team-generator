@@ -1,8 +1,6 @@
 package pl.mateusz.csgoteamgenerator;
 
-import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.drawable.Drawable;
@@ -19,16 +17,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class GenerateFragment extends Fragment {
@@ -36,12 +30,14 @@ public class GenerateFragment extends Fragment {
     private ImageView[] playerImageViews = new ImageView[5];
     private TextView[] playerTextViews = new TextView[5];
 
-    private class TaskParams {
+    private class Player {
         String name;
+        String url;
         int index;
 
-        public TaskParams(String name, int index) {
+        public Player(String name, String url, int index) {
             this.name = name;
+            this.url = url;
             this.index = index;
         }
     }
@@ -94,8 +90,7 @@ public class GenerateFragment extends Fragment {
             if (names != null) {
                 for (int i = 0; i < 5; i++) {
                     Log.d("INFO", "Generated playername: " + names[i]);
-                    new PlayerImageURLTask().execute(new TaskParams(names[i], i));
-                    playerTextViews[i].setText(names[i]);
+                    new PlayerImageURLTask().execute(new Player(names[i], null, i));
                 }
             } else {
                 Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT)
@@ -104,14 +99,16 @@ public class GenerateFragment extends Fragment {
         }
     }
 
-    private class PlayerImageURLTask extends AsyncTask<TaskParams, Void, String> {
+    private class PlayerImageURLTask extends AsyncTask<Player, Void, String> {
         int index;
+        String name;
 
         @Override
-        protected String doInBackground(TaskParams... params) {
+        protected String doInBackground(Player... params) {
             try {
-                String playerProfileURL = liquipediaURL + params[0].name;
+                name = params[0].name;
                 index = params[0].index;
+                String playerProfileURL = liquipediaURL + name;
                 Element doc = Jsoup
                         .connect(playerProfileURL)
                         .timeout(1000) //TODO test value
@@ -119,7 +116,6 @@ public class GenerateFragment extends Fragment {
                                 "AppleWebKit/537.36 (KHTML, like Gecko) " +
                                 "Chrome/45.0.2454.101 Safari/537.36")
                         .get().head();
-
                 String strMetaImg = doc.getElementsByTag("meta").get(12).toString();
                 Log.d("INFO", "player meta: " + strMetaImg);
                 int beginIndex = strMetaImg.indexOf("https");
@@ -138,7 +134,7 @@ public class GenerateFragment extends Fragment {
         protected void onPostExecute(String imageURL) {
             if (imageURL != null) {
                 Log.d("INFO", "Index URL: " + index);
-                new PlayerImageToDrawableTask().execute(new TaskParams(imageURL, index));
+                new PlayerImageToDrawableTask().execute(new Player(name, imageURL, index));
             } else {
                 Toast.makeText(getActivity(), "Unable to load images", Toast.LENGTH_SHORT)
                         .show();
@@ -146,14 +142,16 @@ public class GenerateFragment extends Fragment {
         }
     }
 
-    private class PlayerImageToDrawableTask extends AsyncTask<TaskParams, Void, Drawable> {
+    private class PlayerImageToDrawableTask extends AsyncTask<Player, Void, Drawable> {
         int index;
+        String name;
 
         @Override
-        protected Drawable doInBackground(TaskParams... params) {
+        protected Drawable doInBackground(Player... params) {
             try {
-                String url = params[0].name;
+                String url = params[0].url;
                 index = params[0].index;
+                name = params[0].name;
                 InputStream is = (InputStream) new URL(url).getContent();
                 return Drawable.createFromStream(is, "src name");
             } catch (Exception e) {
@@ -167,6 +165,7 @@ public class GenerateFragment extends Fragment {
             if (drawable != null) {
                 Log.d("INFO", "Index IMG: " + index);
                 playerImageViews[index].setImageDrawable(drawable);
+                playerTextViews[index].setText(name);
             } else {
                 Toast.makeText(getActivity(), "Unable to load images", Toast.LENGTH_SHORT)
                         .show();
