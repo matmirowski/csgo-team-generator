@@ -30,18 +30,56 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
 
     private void updateDatabase(SQLiteDatabase db, int oldVersion) {
-        switch (oldVersion) {
-            case 0:
-                //addRecord(db, "Mynio", Role.IGL);
-                addRecord(db, "Sidney", Role.IGL);
-                addRecord(db, "Snax", Role.Rifler);
-                addRecord(db, "Furlan", Role.Rifler);
-                addRecord(db, "Oskarish", Role.Rifler);
-                addRecord(db, "phr", Role.Rifler);
-                addRecord(db, "MICHU", Role.Rifler);
-                addRecord(db, "GruBy", Role.Rifler);
-                addRecord(db, "Snatchie", Role.Sniper);
-                addRecord(db, "Markoś", Role.Sniper);
+        if (oldVersion < 1) { // players with photos
+            addRecord(db, "Sidney", Role.IGL);
+            addRecord(db, "phr", Role.IGL);
+            addRecord(db, "Oskarish", Role.IGL);
+            addRecord(db, "SZPERO", Role.IGL);
+            addRecord(db, "Snax", Role.Rifler);
+            addRecord(db, "Furlan", Role.Rifler);
+            addRecord(db, "MICHU", Role.Rifler);
+            addRecord(db, "GruBy", Role.Rifler);
+            addRecord(db, "Byali", Role.Rifler);
+            addRecord(db, "KEi", Role.Rifler);
+            addRecord(db, "Innocent", Role.Rifler);
+            addRecord(db, "Vegi", Role.Rifler);
+            addRecord(db, "Sobol", Role.Rifler);
+            addRecord(db, "Leman", Role.Rifler);
+            addRecord(db, "Goofy", Role.Rifler);
+            addRecord(db, "TOAO", Role.Rifler);
+            addRecord(db, "Mouz_(Polish_player)", Role.Rifler);
+            addRecord(db, "Rallen", Role.Rifler);
+            addRecord(db, "Reatz", Role.Rifler);
+            addRecord(db, "Demho", Role.Rifler);
+            addRecord(db, "KRaSnaL", Role.Rifler);
+            addRecord(db, "TaZ", Role.Rifler);
+            addRecord(db, "Snatchie", Role.Sniper);
+            addRecord(db, "TudsoN", Role.Sniper);
+            addRecord(db, "MINISE", Role.Sniper);
+            addRecord(db, "MhL", Role.Sniper);
+            addRecord(db, "Hades_(Polish_player)", Role.Sniper);
+        }
+        if (oldVersion < 2) { // players with no photo on liquipedia
+//            addRecord(db, "Mynio", Role.IGL);
+//            addRecord(db, "SNx", Role.IGL);
+//            addRecord(db, "LunAtic", Role.IGL);
+//            addRecord(db, "Markoś", Role.Sniper);
+//            addRecord(db, "M4tthi", Role.Sniper);
+//            addRecord(db, "MASKED", Role.Sniper);
+//            addRecord(db, "Layner", Role.Sniper);
+//            addRecord(db, "Fr3nd", Role.Sniper);
+//            addRecord(db, "Kylar", Role.Rifler);
+//            addRecord(db, "Reiko", Role.Rifler);
+//            addRecord(db, "Jedqr", Role.Rifler);
+//            addRecord(db, "Ponczek", Role.Rifler);
+//            addRecord(db, "Bnox", Role.Rifler);
+//            addRecord(db, "ZaNNN", Role.Rifler);
+//            addRecord(db, "Iso", Role.Rifler);
+//            addRecord(db, "Casey", Role.Rifler);
+//            addRecord(db, "OLIMP", Role.Rifler);
+//            addRecord(db, "Darko", Role.Rifler);
+//            addRecord(db, "Prism", Role.Rifler);
+//            addRecord(db, "Enzo", Role.Rifler);
         }
     }
 

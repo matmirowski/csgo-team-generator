@@ -72,7 +72,7 @@ public class GenerateFragment extends Fragment {
                 iglCursor.moveToFirst();
                 iglCursor.move(rand.nextInt(iglCursor.getCount()));
                 sniperCursor.moveToFirst();
-                sniperCursor.move(rand.nextInt(iglCursor.getCount()));
+                sniperCursor.move(rand.nextInt(sniperCursor.getCount()));
                 // 3 riflers are needed from cursor, so we are looking for them in loop
                 String[] results = new String[5];
                 results[0] = sniperCursor.getString(0);
@@ -110,7 +110,7 @@ public class GenerateFragment extends Fragment {
                 index = params[0].index;
                 Element doc = Jsoup
                         .connect(playerProfileURL)
-                        .timeout(3000) //TODO test value
+                        .timeout(1000) //TODO test value
                         .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) " +
                                 "AppleWebKit/537.36 (KHTML, like Gecko) " +
                                 "Chrome/45.0.2454.101 Safari/537.36")
