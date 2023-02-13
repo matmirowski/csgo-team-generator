@@ -32,11 +32,11 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     private void updateDatabase(SQLiteDatabase db, int oldVersion) {
         switch (oldVersion) {
             case 0:
-                addRecord(db, "Mynio", Role.IGL);
+                //addRecord(db, "Mynio", Role.IGL);
                 addRecord(db, "Sidney", Role.IGL);
                 addRecord(db, "Snax", Role.Rifler);
                 addRecord(db, "Furlan", Role.Rifler);
-                addRecord(db, "oskarish", Role.Rifler);
+                addRecord(db, "Oskarish", Role.Rifler);
                 addRecord(db, "phr", Role.Rifler);
                 addRecord(db, "MICHU", Role.Rifler);
                 addRecord(db, "GruBy", Role.Rifler);
