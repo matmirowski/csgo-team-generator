@@ -87,17 +87,19 @@ public class GenerateFragment extends Fragment {
                         "ROLE = ?",
                         new String[] {"Sniper"},
                         null, null, null);
-
                 Random rand = new Random();
+
                 // move cursors to random player from query
                 iglCursor.moveToFirst();
                 iglCursor.move(rand.nextInt(iglCursor.getCount()));
                 sniperCursor.moveToFirst();
                 sniperCursor.move(rand.nextInt(sniperCursor.getCount()));
+
                 // temporary array containing sniper and igl
                 String[] results = new String[5];
                 results[0] = sniperCursor.getString(0);
                 results[4] = iglCursor.getString(0);
+
                 // we use method that gets random 3 riflers from cursor and puts them in an array
                 // with igl and sniper (riflers are in indexes 1-3)
                 String[] finalResults = getRandomRiflersFromCursor(riflerCursor, results);
@@ -149,6 +151,7 @@ public class GenerateFragment extends Fragment {
                 name = params[0].name;
                 index = params[0].index;
                 String playerProfileURL = liquipediaURL + name;
+
                 // site scraping using Jsoup
                 Element doc = Jsoup
                         .connect(playerProfileURL)
@@ -157,10 +160,12 @@ public class GenerateFragment extends Fragment {
                                 "AppleWebKit/537.36 (KHTML, like Gecko) " +
                                 "Chrome/45.0.2454.101 Safari/537.36")
                         .get().head();
+
                 // get only element with image url (index 12 of meta tags)
                 String strMetaImg = doc.getElementsByTag("meta").get(12).toString();
                 Log.d("INFO", "player meta: " + strMetaImg);
                 int beginIndex = strMetaImg.indexOf("https");
+
                 // if there is no player photo on liquipedia, default hltv photo is being used
                 if (beginIndex == -1)
                     return "https://www.hltv.org/img/static/player/player_silhouette.png";
@@ -215,7 +220,15 @@ public class GenerateFragment extends Fragment {
         protected void onPostExecute(Drawable drawable) {
             if (drawable != null) {
                 Log.d("INFO", "Index IMG: " + index);
+
+                // display player image in ImageView
                 playerImageViews[index].setImageDrawable(drawable);
+
+                // if player nickname contains ("_Polish_player), it needs to be cut
+                if (name.endsWith("_(Polish_player)"))
+                    name = name.substring(0, name.length() - 16);
+
+                // display player nickname in TextView
                 playerTextViews[index].setText(name);
             } else {
                 Toast.makeText(getActivity(), "Unable to load images", Toast.LENGTH_SHORT)
