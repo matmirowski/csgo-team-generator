@@ -6,37 +6,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <include
+        android:id="@+id/include"
+        layout="@layout/toolbar_main" />
+
     <ImageView
         android:id="@+id/image_player1"
         android:layout_width="120dp"
         android:layout_height="150dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toStartOf="@+id/image_player2"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/image_player2"
         android:layout_width="120dp"
         android:layout_height="150dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toStartOf="@+id/image_player3"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/image_player3"
         android:layout_width="120dp"
         android:layout_height="150dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
@@ -44,10 +48,10 @@
         android:layout_width="120dp"
         android:layout_height="150dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toEndOf="@+id/image_player3"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
@@ -55,10 +59,10 @@
         android:layout_width="120dp"
         android:layout_height="150dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toEndOf="@+id/image_player4"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView

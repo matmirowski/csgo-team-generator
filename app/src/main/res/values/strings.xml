@@ -10,6 +10,9 @@
     <string name="settings">Settings</string>
     <string name="nav_open_drawer">Open nagivation drawer</string>
     <string name="nav_close_drawer">Close nagivation drawer</string>
+    <string name="sniper_tab">Snipers</string>
+    <string name="riflers_tab">Riflers</string>
+    <string name="igls_tab">IGLs</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
