@@ -1,57 +1,88 @@
 package pl.mateusz.csgoteamgenerator.ListFragments;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+
+import java.io.IOException;
+
+import pl.mateusz.csgoteamgenerator.DatabaseHandler;
+import pl.mateusz.csgoteamgenerator.GenerateFragment;
+import pl.mateusz.csgoteamgenerator.MyDatabaseHelper;
 import pl.mateusz.csgoteamgenerator.R;
+import pl.mateusz.csgoteamgenerator.Role;
 
-public class SniperFragment extends Fragment {
+public class SniperFragment extends ListFragment {
+    SQLiteDatabase db;
+    Cursor cursor;
 
-    public class CaptionedPlayersAdapter extends RecyclerView.Adapter<CaptionedPlayersAdapter.ViewHolder> {
-        private String[] players;
-        private Drawable[] drawables;
-
-        public CaptionedPlayersAdapter(String[] players, Drawable[] drawables) {
-            this.players = players;
-            this.drawables = drawables;
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            return null;
-        }
+    private class SetupAdapterTask extends AsyncTask <Role, Void, SimpleCursorAdapter> {
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-
+        protected SimpleCursorAdapter doInBackground(Role... role) {
+            SQLiteOpenHelper helper = new MyDatabaseHelper(getActivity());
+            try {
+                db = helper.getReadableDatabase();
+                cursor = db.query("PLAYERS",
+                        new String[]{"_id", "NAME"}, "ROLE = ?",
+                        new String[]{role[0].toString()},
+                        null, null, null);
+                return new SimpleCursorAdapter(getActivity(),
+                        android.R.layout.simple_list_item_1,
+                        cursor,
+                        new String[]{"NAME"},
+                        new int[] {android.R.id.text1},
+                        0);
+            } catch (SQLiteException e) {
+                Log.e("ERR", "Error while setting up adapter in SniperFragment", e);
+                return null;
+            }
         }
 
         @Override
-        public int getItemCount() {
-            return players.length;
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            private final CardView cardView;
-
-            public ViewHolder(CardView v) {
-                super(v);
-                cardView = v;
+        protected void onPostExecute(SimpleCursorAdapter adapter) {
+            if (adapter != null) {
+                setListAdapter(adapter);
+            } else {
+                Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT)
+                        .show();
             }
         }
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_sniper, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        new SetupAdapterTask().execute(Role.Sniper);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cursor.close();
+        db.close();
     }
 }
