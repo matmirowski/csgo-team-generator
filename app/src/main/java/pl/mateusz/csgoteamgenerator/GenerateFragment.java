@@ -27,14 +27,25 @@ import java.util.Random;
 
 public class GenerateFragment extends Fragment {
     private static final String liquipediaURL = "https://liquipedia.net/counterstrike/";
-    private ImageView[] playerImageViews = new ImageView[5];
-    private TextView[] playerTextViews = new TextView[5];
+    private final ImageView[] playerImageViews = new ImageView[5];
+    private final TextView[] playerTextViews = new TextView[5];
 
-    private class Player {
+    /**
+     * Represents basic information about the player, used in AsyncTasks to pass information
+     * about the player to another task.
+     */
+    private static class Player {
         String name;
         String url;
         int index;
 
+        /**
+         * Creates a player.
+         * @param name nickname of a player
+         * @param url url address of player's image (can be null)
+         * @param index index of location, where player should appear (0 - sniper, 1-3 - rifler,
+         *             4 - igl)
+         */
         public Player(String name, String url, int index) {
             this.name = name;
             this.url = url;
@@ -42,12 +53,25 @@ public class GenerateFragment extends Fragment {
         }
     }
 
+    /**
+     * Asynchronous task used to get random player for each spot in generated team from database.
+     * 3 cursors are used in background thread, one for each role.
+     * There aren't any parameters for background thread. Array of strings is being passed to
+     * onPostExecute, which launches PlayerImageURLTask, when all nicknames are obtained.
+     */
     private class RandomNicknamesFromDatabaseTask extends AsyncTask<Void, Void, String[]> {
+
+        /**
+         * @return String array with 5 random players from database
+         * (index: 0 - sniper, 1-3 - riflers, 4 - igl)
+         * Returns null if SQLiteException was thrown.
+         */
         @Override
         protected String[] doInBackground(Void... voids) {
             MyDatabaseHelper dbHelper = new MyDatabaseHelper(getActivity());
             try {
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
+                // cursors containing all players with specific role
                 Cursor iglCursor = db.query("PLAYERS",
                         new String[]{"NAME"},
                         "ROLE = ?",
@@ -63,16 +87,19 @@ public class GenerateFragment extends Fragment {
                         "ROLE = ?",
                         new String[] {"Sniper"},
                         null, null, null);
+
                 Random rand = new Random();
                 // move cursors to random player from query
                 iglCursor.moveToFirst();
                 iglCursor.move(rand.nextInt(iglCursor.getCount()));
                 sniperCursor.moveToFirst();
                 sniperCursor.move(rand.nextInt(sniperCursor.getCount()));
-                // 3 riflers are needed from cursor, so we are looking for them in loop
+                // temporary array containing sniper and igl
                 String[] results = new String[5];
                 results[0] = sniperCursor.getString(0);
                 results[4] = iglCursor.getString(0);
+                // we use method that gets random 3 riflers from cursor and puts them in an array
+                // with igl and sniper (riflers are in indexes 1-3)
                 String[] finalResults = getRandomRiflersFromCursor(riflerCursor, results);
                 iglCursor.close();
                 sniperCursor.close();
@@ -99,23 +126,38 @@ public class GenerateFragment extends Fragment {
         }
     }
 
+    /**
+     * Asynchronous task used to get image URL from Liquipedia page of the player using Jsoup
+     * library. It returns that URL, or if there is no player photo, returns default HLTV player
+     * image URL.
+     * onPostExecute launches PlayerImageToDrawableTask, which converts URL into drawable and puts
+     * it in the ImageView.
+     */
     private class PlayerImageURLTask extends AsyncTask<Player, Void, String> {
-        int index;
-        String name;
+        private int index;
+        private String name;
 
+        /**
+         * @param params information about player
+         * @return url of player image from liquipedia (or hltv default photo if there's no picture
+         * on liquipedia)
+         * Returns null if there was thrown an exception.
+         */
         @Override
         protected String doInBackground(Player... params) {
             try {
                 name = params[0].name;
                 index = params[0].index;
                 String playerProfileURL = liquipediaURL + name;
+                // site scraping using Jsoup
                 Element doc = Jsoup
                         .connect(playerProfileURL)
-                        .timeout(1000) //TODO test value
+                        .timeout(1000)
                         .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) " +
                                 "AppleWebKit/537.36 (KHTML, like Gecko) " +
                                 "Chrome/45.0.2454.101 Safari/537.36")
                         .get().head();
+                // get only element with image url (index 12 of meta tags)
                 String strMetaImg = doc.getElementsByTag("meta").get(12).toString();
                 Log.d("INFO", "player meta: " + strMetaImg);
                 int beginIndex = strMetaImg.indexOf("https");
@@ -142,10 +184,19 @@ public class GenerateFragment extends Fragment {
         }
     }
 
+    /**
+     * Asynchronous task used to convert image URL to Drawable using InputStream. Then it puts that
+     * drawable in ImageView and puts nick of the player in TextView.
+     */
     private class PlayerImageToDrawableTask extends AsyncTask<Player, Void, Drawable> {
-        int index;
-        String name;
+        private int index;
+        private String name;
 
+        /**
+         *
+         * @param params - information about player containing image URL
+         * @return drawable with player image (or null if thrown exception)
+         */
         @Override
         protected Drawable doInBackground(Player... params) {
             try {
@@ -181,6 +232,11 @@ public class GenerateFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_generate, container, false);
     }
 
+    /**
+     * On start of the fragment:
+     * - set onClickListener for generateButton
+     * - fill arrays with ImageViews (with player photos) and TextViews (with nicknames)
+     */
     @Override
     public void onStart() {
         FragmentActivity rootActivity = getActivity();
@@ -199,10 +255,20 @@ public class GenerateFragment extends Fragment {
         super.onStart();
     }
 
+    /**
+     * Invoked while generateButton was clicked
+     */
     private void onClickGenerate() {
         new RandomNicknamesFromDatabaseTask().execute();
     }
 
+    /**
+     * Gets 3 random records from cursor containing all riflers.
+     * Also checks if these records are individual (not repeated)
+     * @param cursor cursor containing all riflers from database
+     * @param results string array containing sniper on index 0 and igl on index 4
+     * @return string array filled with all randomized players
+     */
     private String[] getRandomRiflersFromCursor(Cursor cursor, String[] results) {
         Random rand = new Random();
         int correctPlayers = 0;
