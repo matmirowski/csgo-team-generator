@@ -34,55 +34,12 @@ import pl.mateusz.csgoteamgenerator.MyDatabaseHelper;
 import pl.mateusz.csgoteamgenerator.R;
 import pl.mateusz.csgoteamgenerator.Role;
 
-public class SniperFragment extends ListFragment {
-    SQLiteDatabase db;
-    Cursor cursor;
-
-    private class SetupAdapterTask extends AsyncTask <Role, Void, SimpleCursorAdapter> {
-
-        @Override
-        protected SimpleCursorAdapter doInBackground(Role... role) {
-            SQLiteOpenHelper helper = new MyDatabaseHelper(getActivity());
-            try {
-                db = helper.getReadableDatabase();
-                cursor = db.query("PLAYERS",
-                        new String[]{"_id", "NAME"}, "ROLE = ?",
-                        new String[]{role[0].toString()},
-                        null, null, null);
-                return new SimpleCursorAdapter(getActivity(),
-                        android.R.layout.simple_list_item_1,
-                        cursor,
-                        new String[]{"NAME"},
-                        new int[] {android.R.id.text1},
-                        0);
-            } catch (SQLiteException e) {
-                Log.e("ERR", "Error while setting up adapter in SniperFragment", e);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(SimpleCursorAdapter adapter) {
-            if (adapter != null) {
-                setListAdapter(adapter);
-            } else {
-                Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        }
-    }
+public class SniperFragment extends AbstractRoleListFragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         new SetupAdapterTask().execute(Role.Sniper);
         return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        cursor.close();
-        db.close();
     }
 }
