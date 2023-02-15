@@ -8,6 +8,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -252,6 +256,7 @@ public class GenerateFragment extends Fragment {
      */
     @Override
     public void onStart() {
+        super.onStart();
         FragmentActivity rootActivity = getActivity();
         ImageButton generateButton = rootActivity.findViewById(R.id.button_generate);
         generateButton.setOnClickListener(e -> onClickGenerate());
@@ -265,7 +270,23 @@ public class GenerateFragment extends Fragment {
         playerTextViews[2] = rootActivity.findViewById(R.id.text_nick3);
         playerTextViews[3] = rootActivity.findViewById(R.id.text_nick4);
         playerTextViews[4] = rootActivity.findViewById(R.id.text_nick5);
-        super.onStart();
+
+        // set toolbar
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+        }
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                getActivity(),
+                drawerLayout,
+                toolbar,
+                R.string.nav_open_drawer,
+                R.string.nav_close_drawer);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 
     /**

@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -68,19 +70,30 @@ public class PlayerListFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         // setup viewpager
         RolePagerAdapter adapter = new RolePagerAdapter(getActivity().getSupportFragmentManager());
         ViewPager pager = getActivity().findViewById(R.id.pager);
         pager.setAdapter(adapter);
+
         // setup tablayout
         TabLayout tabLayout = getActivity().findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(pager);
-        // hide default toolbar
+
+        // hide default toolbar and set new
         ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
         Toolbar listToolbar = getActivity().findViewById(R.id.player_list_toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(listToolbar);
+        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                getActivity(),
+                drawerLayout,
+                listToolbar,
+                R.string.nav_open_drawer,
+                R.string.nav_close_drawer);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
     }
 
     @Override

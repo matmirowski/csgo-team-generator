@@ -39,7 +39,12 @@ public class SniperFragment extends AbstractRoleListFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        new SetupAdapterTask().execute(Role.Sniper);
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new SetupAdapterTask().execute(Role.Sniper);
     }
 }
