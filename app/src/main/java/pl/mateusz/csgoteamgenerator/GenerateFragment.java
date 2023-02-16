@@ -38,6 +38,8 @@ public class GenerateFragment extends Fragment {
     private static final String liquipediaURL = "https://liquipedia.net/counterstrike/";
     private final ImageView[] playerImageViews = new ImageView[5];
     private final TextView[] playerTextViews = new TextView[5];
+    private final Drawable[] playerImageDrawables = new Drawable[5];
+    private final String[] playerTemporaryNicknames = new String[5];
     private RequestBuilder<Drawable> onClickDrawable;
     private boolean generating = false;
     private final Handler handler = new Handler();
@@ -233,15 +235,13 @@ public class GenerateFragment extends Fragment {
             if (drawable != null) {
                 Log.d("INFO", "Index IMG: " + index);
 
-                // display player image in ImageView
-                playerImageViews[index].setImageDrawable(drawable);
-
                 // if player nickname contains ("_Polish_player), it needs to be cut
                 if (name.endsWith("_(Polish_player)"))
                     name = name.substring(0, name.length() - 16);
 
-                // display player nickname in TextView
-                playerTextViews[index].setText(name);
+                // assign drawable and name to temporary arrays
+                playerImageDrawables[index] = drawable;
+                playerTemporaryNicknames[index] = name;
             } else {
                 Toast.makeText(getActivity(), "Unable to load images", Toast.LENGTH_SHORT)
                         .show();
@@ -261,6 +261,8 @@ public class GenerateFragment extends Fragment {
      * On start of the fragment:
      * - set onClickListener for generateButton
      * - fill arrays with ImageViews (with player photos) and TextViews (with nicknames)
+     * - Setup toolbar
+     * - Load button animation through Glide library
      */
     @Override
     public void onStart() {
@@ -317,8 +319,15 @@ public class GenerateFragment extends Fragment {
         @Override
         public void run() {
             generating = false;
+            // change generateButton gif to static image
             ImageView generateButton = getActivity().findViewById(R.id.button_generate);
             generateButton.setImageResource(R.drawable.generate_static);
+
+            // change player textviews and imageviews
+            for (int i = 0; i < 5; i++) {
+                playerTextViews[i].setText(playerTemporaryNicknames[i]);
+                playerImageViews[i].setImageDrawable(playerImageDrawables[i]);
+            }
         }
     };
 
