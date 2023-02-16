@@ -291,6 +291,7 @@ public class GenerateFragment extends Fragment {
             ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
         }
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle("Save Polish CS with your generated roster!");
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
