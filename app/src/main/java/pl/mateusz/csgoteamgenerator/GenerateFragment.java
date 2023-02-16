@@ -250,8 +250,6 @@ public class GenerateFragment extends Fragment {
         }
     }
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -268,45 +266,13 @@ public class GenerateFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        FragmentActivity rootActivity = getActivity();
-        ImageView generateButton = rootActivity.findViewById(R.id.button_generate);
+        ImageView generateButton = getActivity().findViewById(R.id.button_generate);
         generateButton.setOnClickListener(e -> onClickGenerate());
-        playerImageViews[0] = rootActivity.findViewById(R.id.frame_layout_player1)
-                .findViewById(R.id.image_player);
-        playerImageViews[1] = rootActivity.findViewById(R.id.frame_layout_player2)
-                .findViewById(R.id.image_player);
-        playerImageViews[2] = rootActivity.findViewById(R.id.frame_layout_player3)
-                .findViewById(R.id.image_player);
-        playerImageViews[3] = rootActivity.findViewById(R.id.frame_layout_player4)
-                .findViewById(R.id.image_player);
-        playerImageViews[4] = rootActivity.findViewById(R.id.frame_layout_player5)
-                .findViewById(R.id.image_player);
-        playerTextViews[0] = rootActivity.findViewById(R.id.text_nick1);
-        playerTextViews[1] = rootActivity.findViewById(R.id.text_nick2);
-        playerTextViews[2] = rootActivity.findViewById(R.id.text_nick3);
-        playerTextViews[3] = rootActivity.findViewById(R.id.text_nick4);
-        playerTextViews[4] = rootActivity.findViewById(R.id.text_nick5);
 
-        // set toolbar
-        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-        }
-        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setTitle("Save Polish CS with your generated roster!");
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                getActivity(),
-                drawerLayout,
-                toolbar,
-                R.string.nav_open_drawer,
-                R.string.nav_close_drawer);
-        toggle.getDrawerArrowDrawable().setColor(Color.WHITE);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        assignViewToArrays();
+        setupToolbar();
 
-        //load animation of button
+        //load animation of the generateButton
         onClickDrawable = Glide.with(getActivity()).load("https://i.imgur.com/SoP7eUI.gif");
     }
 
@@ -323,7 +289,7 @@ public class GenerateFragment extends Fragment {
         }
     }
 
-    Runnable delayedShowPlayersRunnable = new Runnable() {
+    private final Runnable delayedShowPlayersRunnable = new Runnable() {
         @Override
         public void run() {
             generating = false;
@@ -368,5 +334,44 @@ public class GenerateFragment extends Fragment {
             }
         }
         return results;
+    }
+    
+    private void assignViewToArrays() {
+        FragmentActivity rootActivity = getActivity();
+        playerImageViews[0] = rootActivity.findViewById(R.id.frame_layout_player1)
+                .findViewById(R.id.image_player);
+        playerImageViews[1] = rootActivity.findViewById(R.id.frame_layout_player2)
+                .findViewById(R.id.image_player);
+        playerImageViews[2] = rootActivity.findViewById(R.id.frame_layout_player3)
+                .findViewById(R.id.image_player);
+        playerImageViews[3] = rootActivity.findViewById(R.id.frame_layout_player4)
+                .findViewById(R.id.image_player);
+        playerImageViews[4] = rootActivity.findViewById(R.id.frame_layout_player5)
+                .findViewById(R.id.image_player);
+        playerTextViews[0] = rootActivity.findViewById(R.id.text_nick1);
+        playerTextViews[1] = rootActivity.findViewById(R.id.text_nick2);
+        playerTextViews[2] = rootActivity.findViewById(R.id.text_nick3);
+        playerTextViews[3] = rootActivity.findViewById(R.id.text_nick4);
+        playerTextViews[4] = rootActivity.findViewById(R.id.text_nick5);
+    }
+
+    private void setupToolbar() {
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+        }
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle("Save Polish CS with your generated roster!");
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                getActivity(),
+                drawerLayout,
+                toolbar,
+                R.string.nav_open_drawer,
+                R.string.nav_close_drawer);
+        toggle.getDrawerArrowDrawable().setColor(Color.WHITE);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 }
