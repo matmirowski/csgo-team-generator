@@ -335,7 +335,7 @@ public class GenerateFragment extends Fragment {
         }
         return results;
     }
-    
+
     private void assignViewToArrays() {
         FragmentActivity rootActivity = getActivity();
         playerImageViews[0] = rootActivity.findViewById(R.id.frame_layout_player1)
