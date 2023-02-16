@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getApplication().setTheme(R.style.Theme_CSGOTeamGenerator);
         setContentView(R.layout.activity_main);
 
         NavigationView navigationView = findViewById(R.id.nav_view);

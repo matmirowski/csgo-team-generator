@@ -182,7 +182,7 @@ public class GenerateFragment extends Fragment {
 
                 // if there is no player photo on liquipedia, default hltv photo is being used
                 if (beginIndex == -1)
-                    return "https://www.hltv.org/img/static/player/player_silhouette.png";
+                    return "https://i.imgur.com/KQDl2wD.png";
                 int endIndex = strMetaImg.length() - 2;
                 return strMetaImg.substring(beginIndex, endIndex);
             } catch (IOException e) {
@@ -270,11 +270,16 @@ public class GenerateFragment extends Fragment {
         FragmentActivity rootActivity = getActivity();
         ImageView generateButton = rootActivity.findViewById(R.id.button_generate);
         generateButton.setOnClickListener(e -> onClickGenerate());
-        playerImageViews[0] = rootActivity.findViewById(R.id.image_player1);
-        playerImageViews[1] = rootActivity.findViewById(R.id.image_player2);
-        playerImageViews[2] = rootActivity.findViewById(R.id.image_player3);
-        playerImageViews[3] = rootActivity.findViewById(R.id.image_player4);
-        playerImageViews[4] = rootActivity.findViewById(R.id.image_player5);
+        playerImageViews[0] = rootActivity.findViewById(R.id.frame_layout_player1)
+                .findViewById(R.id.image_player);
+        playerImageViews[1] = rootActivity.findViewById(R.id.frame_layout_player2)
+                .findViewById(R.id.image_player);
+        playerImageViews[2] = rootActivity.findViewById(R.id.frame_layout_player3)
+                .findViewById(R.id.image_player);
+        playerImageViews[3] = rootActivity.findViewById(R.id.frame_layout_player4)
+                .findViewById(R.id.image_player);
+        playerImageViews[4] = rootActivity.findViewById(R.id.frame_layout_player5)
+                .findViewById(R.id.image_player);
         playerTextViews[0] = rootActivity.findViewById(R.id.text_nick1);
         playerTextViews[1] = rootActivity.findViewById(R.id.text_nick2);
         playerTextViews[2] = rootActivity.findViewById(R.id.text_nick3);

@@ -11,70 +11,69 @@
         android:id="@+id/include"
         layout="@layout/toolbar_main" />
 
-    <ImageView
-        android:id="@+id/image_player1"
-        android:layout_width="120dp"
-        android:layout_height="150dp"
+    <include
+        layout="@layout/player_image_frame"
+        android:id="@+id/frame_layout_player1"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toStartOf="@+id/image_player2"
-        app:layout_constraintTop_toBottomOf="@+id/include"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <ImageView
-        android:id="@+id/image_player2"
         android:layout_width="120dp"
         android:layout_height="150dp"
+        app:layout_constraintEnd_toStartOf="@+id/frame_layout_player2"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
+
+    <include
+        layout="@layout/player_image_frame"
+        android:id="@+id/frame_layout_player2"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toStartOf="@+id/image_player3"
-        app:layout_constraintTop_toBottomOf="@+id/include"
-        tools:srcCompat="@tools:sample/avatars" />
+        android:layout_width="120dp"
+        android:layout_height="150dp"
+        app:layout_constraintEnd_toStartOf="@+id/frame_layout_player3"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
-    <ImageView
-        android:id="@+id/image_player3"
+    <include
+        android:id="@+id/frame_layout_player3"
+        layout="@layout/player_image_frame"
         android:layout_width="120dp"
         android:layout_height="150dp"
         android:layout_marginTop="32dp"
-        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
-    <ImageView
-        android:id="@+id/image_player4"
+    <include
+        android:id="@+id/frame_layout_player4"
+        layout="@layout/player_image_frame"
         android:layout_width="120dp"
         android:layout_height="150dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toEndOf="@+id/image_player3"
-        app:layout_constraintTop_toBottomOf="@+id/include"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintStart_toEndOf="@+id/frame_layout_player3"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
-    <ImageView
-        android:id="@+id/image_player5"
+    <include
+        android:id="@+id/frame_layout_player5"
+        layout="@layout/player_image_frame"
         android:layout_width="120dp"
         android:layout_height="150dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toEndOf="@+id/image_player4"
-        app:layout_constraintTop_toBottomOf="@+id/include"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintStart_toEndOf="@+id/frame_layout_player4"
+        app:layout_constraintTop_toBottomOf="@+id/include" />
+
 
     <TextView
         android:id="@+id/text_sniper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:fontFamily="@font/agency_fb"
         android:text="@string/sniper"
-        app:layout_constraintBottom_toTopOf="@+id/image_player1"
-        app:layout_constraintEnd_toEndOf="@+id/image_player1"
-        app:layout_constraintStart_toStartOf="@+id/image_player1" />
+        android:textColor="@color/text_gray"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/frame_layout_player1"
+        app:layout_constraintEnd_toEndOf="@+id/frame_layout_player1"
+        app:layout_constraintStart_toStartOf="@+id/frame_layout_player1" />
 
     <TextView
         android:id="@+id/text_rifle1"
@@ -82,9 +81,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/rifler"
-        app:layout_constraintBottom_toTopOf="@+id/image_player2"
-        app:layout_constraintEnd_toEndOf="@+id/image_player2"
-        app:layout_constraintStart_toStartOf="@+id/image_player2" />
+        android:textColor="@color/text_gray"
+        android:fontFamily="@font/agency_fb"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/frame_layout_player2"
+        app:layout_constraintEnd_toEndOf="@+id/frame_layout_player2"
+        app:layout_constraintStart_toStartOf="@+id/frame_layout_player2" />
 
     <TextView
         android:id="@+id/text_rifle2"
@@ -92,9 +94,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/rifler"
-        app:layout_constraintBottom_toTopOf="@+id/image_player3"
-        app:layout_constraintEnd_toEndOf="@+id/image_player3"
-        app:layout_constraintStart_toStartOf="@+id/image_player3" />
+        android:textColor="@color/text_gray"
+        android:fontFamily="@font/agency_fb"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/frame_layout_player3"
+        app:layout_constraintEnd_toEndOf="@+id/frame_layout_player3"
+        app:layout_constraintStart_toStartOf="@+id/frame_layout_player3" />
 
     <TextView
         android:id="@+id/text_rifle3"
@@ -102,9 +107,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/rifler"
-        app:layout_constraintBottom_toTopOf="@+id/image_player4"
-        app:layout_constraintEnd_toEndOf="@+id/image_player4"
-        app:layout_constraintStart_toStartOf="@+id/image_player4" />
+        android:textColor="@color/text_gray"
+        android:fontFamily="@font/agency_fb"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/frame_layout_player4"
+        app:layout_constraintEnd_toEndOf="@+id/frame_layout_player4"
+        app:layout_constraintStart_toStartOf="@+id/frame_layout_player4" />
 
     <TextView
         android:id="@+id/text_igl"
@@ -112,59 +120,77 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/igl"
-        app:layout_constraintBottom_toTopOf="@+id/image_player5"
-        app:layout_constraintEnd_toEndOf="@+id/image_player5"
-        app:layout_constraintStart_toStartOf="@+id/image_player5" />
+        android:textColor="@color/text_gray"
+        android:fontFamily="@font/agency_fb"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/frame_layout_player5"
+        app:layout_constraintEnd_toEndOf="@+id/frame_layout_player5"
+        app:layout_constraintStart_toStartOf="@+id/frame_layout_player5" />
 
     <TextView
         android:id="@+id/text_nick1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/image_player1"
-        app:layout_constraintStart_toStartOf="@+id/image_player1"
-        app:layout_constraintTop_toBottomOf="@+id/image_player1" />
+        android:fontFamily="@font/agency_fb"
+        android:text=""
+        android:textColor="@color/text_gray"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/frame_layout_player1"
+        app:layout_constraintStart_toStartOf="@+id/frame_layout_player1"
+        app:layout_constraintTop_toBottomOf="@+id/frame_layout_player1" />
 
     <TextView
         android:id="@+id/text_nick2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/image_player2"
-        app:layout_constraintStart_toStartOf="@+id/image_player2"
-        app:layout_constraintTop_toBottomOf="@+id/image_player2" />
+        android:text=""
+        android:textColor="@color/text_gray"
+        android:fontFamily="@font/agency_fb"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/frame_layout_player2"
+        app:layout_constraintStart_toStartOf="@+id/frame_layout_player2"
+        app:layout_constraintTop_toBottomOf="@+id/frame_layout_player2" />
 
     <TextView
         android:id="@+id/text_nick3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/image_player3"
-        app:layout_constraintStart_toStartOf="@+id/image_player3"
-        app:layout_constraintTop_toBottomOf="@+id/image_player3" />
+        android:text=""
+        android:textColor="@color/text_gray"
+        android:fontFamily="@font/agency_fb"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/frame_layout_player3"
+        app:layout_constraintStart_toStartOf="@+id/frame_layout_player3"
+        app:layout_constraintTop_toBottomOf="@+id/frame_layout_player3" />
 
     <TextView
         android:id="@+id/text_nick4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/image_player4"
-        app:layout_constraintStart_toStartOf="@+id/image_player4"
-        app:layout_constraintTop_toBottomOf="@+id/image_player4" />
+        android:text=""
+        android:textColor="@color/text_gray"
+        android:fontFamily="@font/agency_fb"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/frame_layout_player4"
+        app:layout_constraintStart_toStartOf="@+id/frame_layout_player4"
+        app:layout_constraintTop_toBottomOf="@+id/frame_layout_player4" />
 
     <TextView
         android:id="@+id/text_nick5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/image_player5"
-        app:layout_constraintStart_toStartOf="@+id/image_player5"
-        app:layout_constraintTop_toBottomOf="@+id/image_player5" />
+        android:text=""
+        android:textColor="@color/text_gray"
+        android:fontFamily="@font/agency_fb"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/frame_layout_player5"
+        app:layout_constraintStart_toStartOf="@+id/frame_layout_player5"
+        app:layout_constraintTop_toBottomOf="@+id/frame_layout_player5" />
 
     <ImageView
         android:id="@+id/button_generate"
