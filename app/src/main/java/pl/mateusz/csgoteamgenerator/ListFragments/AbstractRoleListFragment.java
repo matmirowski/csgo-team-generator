@@ -5,8 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.widget.CursorAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
@@ -14,8 +17,6 @@ import pl.mateusz.csgoteamgenerator.MyDatabaseHelper;
 import pl.mateusz.csgoteamgenerator.Role;
 
 public abstract class AbstractRoleListFragment extends ListFragment {
-    SQLiteDatabase db;
-    Cursor cursor;
 
     protected class SetupAdapterTask extends AsyncTask<Role, Void, SimpleCursorAdapter> {
 
@@ -23,8 +24,8 @@ public abstract class AbstractRoleListFragment extends ListFragment {
         protected SimpleCursorAdapter doInBackground(Role... role) {
             SQLiteOpenHelper helper = new MyDatabaseHelper(getActivity());
             try {
-                db = helper.getReadableDatabase();
-                cursor = db.query("PLAYERS",
+                SQLiteDatabase db = helper.getReadableDatabase();
+                Cursor cursor = db.query("PLAYERS",
                         new String[]{"_id", "NAME"}, "ROLE = ?",
                         new String[]{role[0].toString()},
                         null, null, null);
@@ -49,12 +50,5 @@ public abstract class AbstractRoleListFragment extends ListFragment {
                         .show();
             }
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        cursor.close();
-        db.close();
     }
 }

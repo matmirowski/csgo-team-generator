@@ -7,22 +7,27 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.ListFragment;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import pl.mateusz.csgoteamgenerator.ListFragments.AbstractRoleListFragment;
 import pl.mateusz.csgoteamgenerator.ListFragments.IglFragment;
 import pl.mateusz.csgoteamgenerator.ListFragments.RiflerFragment;
 import pl.mateusz.csgoteamgenerator.ListFragments.SniperFragment;
 
 public class PlayerListFragment extends Fragment {
 
-    private class RolePagerAdapter extends FragmentPagerAdapter {
+    private class RolePagerAdapter extends FragmentStatePagerAdapter {
 
         public RolePagerAdapter(FragmentManager fm) {
             super(fm);
@@ -59,19 +64,20 @@ public class PlayerListFragment extends Fragment {
             }
             return null;
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         return inflater.inflate(R.layout.fragment_player_list, container, false);
-
     }
 
+
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
+        Log.e("INFO", "STARTING PAGER");
         // setup viewpager
         RolePagerAdapter adapter = new RolePagerAdapter(getActivity().getSupportFragmentManager());
         ViewPager pager = getActivity().findViewById(R.id.pager);
@@ -101,4 +107,5 @@ public class PlayerListFragment extends Fragment {
         super.onStop();
         ((AppCompatActivity)getActivity()).getSupportActionBar().show();
     }
+
 }

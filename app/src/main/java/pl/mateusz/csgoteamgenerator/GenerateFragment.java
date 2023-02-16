@@ -3,6 +3,7 @@ package pl.mateusz.csgoteamgenerator;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -293,6 +294,10 @@ public class GenerateFragment extends Fragment {
      * Invoked while generateButton was clicked
      */
     private void onClickGenerate() {
+        ImageButton generateButton = getActivity().findViewById(R.id.button_generate);
+        generateButton.setImageResource(R.drawable.generate_onclick);
+//        AnimationDrawable myFrameAnimation=(AnimationDrawable) generateButton.getBackground();
+//        myFrameAnimation.start();
         new RandomNicknamesFromDatabaseTask().execute();
     }
 
