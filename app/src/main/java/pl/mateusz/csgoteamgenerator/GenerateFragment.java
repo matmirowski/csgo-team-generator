@@ -7,6 +7,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
@@ -22,6 +23,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
@@ -34,6 +38,9 @@ public class GenerateFragment extends Fragment {
     private static final String liquipediaURL = "https://liquipedia.net/counterstrike/";
     private final ImageView[] playerImageViews = new ImageView[5];
     private final TextView[] playerTextViews = new TextView[5];
+    private RequestBuilder<Drawable> onClickDrawable;
+    private boolean generating = false;
+    private final Handler handler = new Handler();
 
     /**
      * Represents basic information about the player, used in AsyncTasks to pass information
@@ -259,7 +266,7 @@ public class GenerateFragment extends Fragment {
     public void onStart() {
         super.onStart();
         FragmentActivity rootActivity = getActivity();
-        ImageButton generateButton = rootActivity.findViewById(R.id.button_generate);
+        ImageView generateButton = rootActivity.findViewById(R.id.button_generate);
         generateButton.setOnClickListener(e -> onClickGenerate());
         playerImageViews[0] = rootActivity.findViewById(R.id.image_player1);
         playerImageViews[1] = rootActivity.findViewById(R.id.image_player2);
@@ -288,18 +295,32 @@ public class GenerateFragment extends Fragment {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+
+        //load animation of button
+        onClickDrawable = Glide.with(getActivity()).load("https://i.imgur.com/SoP7eUI.gif");
     }
 
     /**
      * Invoked while generateButton was clicked
      */
     private void onClickGenerate() {
-        ImageButton generateButton = getActivity().findViewById(R.id.button_generate);
-        generateButton.setImageResource(R.drawable.generate_onclick);
-//        AnimationDrawable myFrameAnimation=(AnimationDrawable) generateButton.getBackground();
-//        myFrameAnimation.start();
-        new RandomNicknamesFromDatabaseTask().execute();
+        if (!generating) {
+            ImageView generateButton = getActivity().findViewById(R.id.button_generate);
+            onClickDrawable.into(generateButton);
+            new RandomNicknamesFromDatabaseTask().execute();
+            generating = true;
+            handler.postDelayed(delayedShowPlayersRunnable, 6400);
+        }
     }
+
+    Runnable delayedShowPlayersRunnable = new Runnable() {
+        @Override
+        public void run() {
+            generating = false;
+            ImageView generateButton = getActivity().findViewById(R.id.button_generate);
+            generateButton.setImageResource(R.drawable.generate_static);
+        }
+    };
 
     /**
      * Gets 3 random records from cursor containing all riflers.
