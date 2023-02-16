@@ -16,15 +16,11 @@
             android:id="@+id/nav_add_player"
             android:icon="@android:drawable/sym_action_email"
             android:title="@string/add_player" />
+        <item
+            android:id="@+id/nav_settings"
+            android:title="@string/settings"
+            android:icon="@android:drawable/sym_action_email" />
     </group>
-
-    <item android:title="@string/misc" >
-        <menu>
-            <item
-                android:id="@+id/nav_settings"
-                android:title="@string/settings"
-                android:icon="@android:drawable/sym_action_email" />
-        </menu>
-    </item>
+    
 
 </menu>

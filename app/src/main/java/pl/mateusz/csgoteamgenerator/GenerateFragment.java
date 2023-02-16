@@ -3,6 +3,7 @@ package pl.mateusz.csgoteamgenerator;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -300,6 +301,7 @@ public class GenerateFragment extends Fragment {
                 toolbar,
                 R.string.nav_open_drawer,
                 R.string.nav_close_drawer);
+        toggle.getDrawerArrowDrawable().setColor(Color.WHITE);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
