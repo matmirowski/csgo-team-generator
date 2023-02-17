@@ -3,11 +3,10 @@
     <string name="sniper">Sniper</string>
     <string name="rifler">Rifler</string>
     <string name="igl">In-game leader</string>
-    <string name="generate_team">Generate team</string>
-    <string name="player_list">Player list</string>
-    <string name="add_player">Add player</string>
-    <string name="misc">Misc.</string>
-    <string name="settings">Settings</string>
+    <string name="generate_team">GENERATE TEAM</string>
+    <string name="player_list">PLAYER LIST</string>
+    <string name="add_player">ADD PLAYER</string>
+    <string name="settings">SETTINGS</string>
     <string name="nav_open_drawer">Open nagivation drawer</string>
     <string name="nav_close_drawer">Close nagivation drawer</string>
     <string name="sniper_tab">Snipers</string>

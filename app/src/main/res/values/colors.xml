@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="text_gray">#d9d9d9</color>
     <color name="drawer_background">#2a0533</color>
+    <color name="bar">#340c73</color>
+    <color name="gray">#afafb6</color>
 </resources>

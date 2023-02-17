@@ -365,6 +365,7 @@ public class GenerateFragment extends Fragment {
         }
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle("Save Polish CS with your generated roster!");
+        toolbar.setBackgroundColor(Color.parseColor("#340c73"));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
