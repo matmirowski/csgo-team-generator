@@ -132,6 +132,8 @@ public class GenerateFragment extends Fragment {
         @Override
         protected void onPostExecute(String[] names) {
             if (names != null) {
+                // "Niko" is a test case to avoid error while displaying first player
+                new PlayerImageURLTask().execute(new Player("Niko", null, -1));
                 for (int i = 0; i < 5; i++) {
                     Log.d("INFO", "Generated playername: " + names[i]);
                     new PlayerImageURLTask().execute(new Player(names[i], null, i));
@@ -194,6 +196,8 @@ public class GenerateFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String imageURL) {
+            if (index == -1) // test case to avoid error while first attempt
+                return;
             if (imageURL != null) {
                 Log.d("INFO", "Index URL: " + index);
                 new PlayerImageToDrawableTask().execute(new Player(name, imageURL, index));
