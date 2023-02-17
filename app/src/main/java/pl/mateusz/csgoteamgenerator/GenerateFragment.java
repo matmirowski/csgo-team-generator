@@ -283,6 +283,10 @@ public class GenerateFragment extends Fragment {
         assignViewToArrays();
         setupToolbar();
 
+        // set navigation bar color
+        getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.bar));
+        getActivity().getWindow().setStatusBarColor(Color.BLACK);
+
         //load animation of the generateButton
         onClickDrawable = Glide.with(getActivity()).load("https://i.imgur.com/SoP7eUI.gif");
     }
@@ -373,7 +377,8 @@ public class GenerateFragment extends Fragment {
         }
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle("Save Polish CS with your generated roster!");
-        toolbar.setBackgroundColor(Color.parseColor("#340c73"));
+        toolbar.setBackgroundColor(getResources().getColor(R.color.appbar_color));
+        toolbar.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

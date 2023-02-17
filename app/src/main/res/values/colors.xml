@@ -11,4 +11,9 @@
     <color name="drawer_background">#2a0533</color>
     <color name="bar">#340c73</color>
     <color name="gray">#afafb6</color>
+    <color name="appbar_color">#340c73</color>
+    <color name="sniper">#520907</color>
+    <color name="rifler">#145308</color>
+    <color name="igl">#092554</color>
+    <color name="test">#171717</color>
 </resources>

@@ -2,9 +2,9 @@
     <!-- Base application theme. -->
     <style name="Theme.CSGOTeamGenerator" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorPrimary">@color/text_gray</item>
         <item name="android:navigationBarColor">#340c73</item>
-        <item name="colorPrimary">@color/purple_700</item>
+        <item name="colorPrimary">@color/appbar_color</item>
         <item name="colorPrimaryDark">@color/black</item>
         <item name="colorAccent">@color/teal_200</item>
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>

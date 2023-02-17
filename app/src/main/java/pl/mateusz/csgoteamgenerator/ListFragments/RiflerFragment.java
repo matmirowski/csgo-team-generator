@@ -26,4 +26,11 @@ public class RiflerFragment extends AbstractRoleListFragment {
         new SetupAdapterTask().execute(Role.Rifler);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
+    @Override
+    public void onStart() {
+        getListView().setBackground(getResources().getDrawable(R.drawable.listback_rifler));
+        super.onStart();
+    }
+
 }

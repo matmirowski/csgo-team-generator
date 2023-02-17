@@ -26,4 +26,11 @@ public class IglFragment extends AbstractRoleListFragment {
         new SetupAdapterTask().execute(Role.IGL);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
+    @Override
+    public void onStart() {
+        getListView().setBackground(getResources().getDrawable(R.drawable.listback_igl));
+        super.onStart();
+    }
+
 }

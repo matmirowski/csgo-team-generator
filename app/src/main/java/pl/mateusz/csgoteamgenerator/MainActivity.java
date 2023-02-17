@@ -44,8 +44,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        if (menuItem.isChecked())
+        if (menuItem.isChecked()) {
+            DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+            drawerLayout.closeDrawer(GravityCompat.START);
             return true;
+        }
+
         int id = menuItem.getItemId();
         Fragment fragment = null;
 
