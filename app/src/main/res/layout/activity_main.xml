@@ -33,7 +33,7 @@
         app:itemIconTint="@color/white"
         app:itemTextAppearance="@style/csgostyle"
         app:headerLayout="@layout/header_layout"
-        app:menu="@menu/menu_nav"/>
+        app:menu="@menu/menu_nav" />
 
 </android.support.v4.widget.DrawerLayout>
 

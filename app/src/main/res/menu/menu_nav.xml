@@ -20,6 +20,10 @@
             android:id="@+id/nav_settings"
             android:title="@string/settings"
             android:icon="@android:drawable/sym_action_email" />
+        <item
+            android:id="@+id/nav_about"
+            android:title="@string/settings"
+            android:icon="@android:drawable/sym_action_email" />
     </group>
     
 

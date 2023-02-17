@@ -1,5 +1,6 @@
 package pl.mateusz.csgoteamgenerator;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -14,9 +15,13 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -43,6 +48,7 @@ public class GenerateFragment extends Fragment {
     private final String[] playerTemporaryNicknames = new String[5];
     private RequestBuilder<Drawable> onClickDrawable;
     private boolean generating = false;
+    private boolean wasGenerated = false;
     private final Handler handler = new Handler();
 
     /**
@@ -257,6 +263,7 @@ public class GenerateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_generate, container, false);
     }
 
@@ -284,6 +291,7 @@ public class GenerateFragment extends Fragment {
      * Invoked while generateButton was clicked
      */
     private void onClickGenerate() {
+        wasGenerated = true;
         if (!generating) {
             ImageView generateButton = getActivity().findViewById(R.id.button_generate);
             onClickDrawable.into(generateButton);
@@ -378,5 +386,43 @@ public class GenerateFragment extends Fragment {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (menu.size() == 0) {
+            Log.d("MENU", "Created new menu");
+            inflater.inflate(R.menu.menu_toolbar_generate, menu);
+            super.onCreateOptionsMenu(menu, inflater);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (generating) {
+            Toast.makeText(getActivity(), "Can't share while generating!", Toast.LENGTH_SHORT)
+                    .show();
+            return super.onOptionsItemSelected(item);
+        } else if (!wasGenerated) {
+            Toast.makeText(getActivity(), "Need to generate team in order to share!",
+                            Toast.LENGTH_SHORT).show();
+            return super.onOptionsItemSelected(item);
+        }
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                String shareText = "Check out my new team, which will save Polish CS:GO Scene!";
+                StringBuilder builder = new StringBuilder(shareText);
+                for (int i = 0; i < 5; i++) {
+                    builder.append("\n").append(playerTextViews[i].getText());
+                }
+                builder.append("\n").append("Generated via CSTeamRoulette");
+                intent.putExtra(Intent.EXTRA_TEXT, builder.toString());
+                Intent chosenIntent = Intent.createChooser(intent, "Share roster via...");
+                startActivity(chosenIntent);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

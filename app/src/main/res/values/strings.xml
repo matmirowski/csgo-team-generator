@@ -12,6 +12,7 @@
     <string name="sniper_tab">Snipers</string>
     <string name="riflers_tab">Riflers</string>
     <string name="igls_tab">IGLs</string>
+    <string name="share">Share</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
