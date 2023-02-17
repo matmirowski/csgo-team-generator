@@ -16,4 +16,5 @@
     <color name="rifler">#145308</color>
     <color name="igl">#092554</color>
     <color name="test">#171717</color>
+    <color name="transparent">#ffffff00</color>
 </resources>

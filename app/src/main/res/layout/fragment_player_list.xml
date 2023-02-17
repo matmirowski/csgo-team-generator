@@ -32,5 +32,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:id="@+id/fab_player_list"
+        android:adjustViewBounds="true"
+        android:scaleType="center"
+        android:fadingEdgeLength="5dp"
+        android:src="@drawable/fab"
+        app:maxImageSize="56dp"
+        app:backgroundTint="@color/transparent" />
 
 </android.support.design.widget.CoordinatorLayout>

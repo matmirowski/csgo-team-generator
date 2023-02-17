@@ -92,7 +92,7 @@ public class PlayerListFragment extends Fragment {
         tabLayout.setupWithViewPager(pager);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.sniper));
 
-        // hide default toolbar and set new with drawerlayout
+        // hide default toolbar and set new with drawerlayout setup
         ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
         Toolbar listToolbar = getActivity().findViewById(R.id.player_list_toolbar);
         listToolbar.setBackgroundColor(getResources().getColor(R.color.test));
@@ -105,6 +105,7 @@ public class PlayerListFragment extends Fragment {
                 listToolbar,
                 R.string.nav_open_drawer,
                 R.string.nav_close_drawer) {
+            //TODO try to decrease delay
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -154,7 +155,6 @@ public class PlayerListFragment extends Fragment {
                 }
             }
         });
-
     }
 
     @Override
