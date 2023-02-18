@@ -3,11 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projekty/CSGOTeamGenerator/app/src/main/res/drawable/custom_input.xml" value="0.2585" />
         <entry key="..\:/Projekty/CSGOTeamGenerator/app/src/main/res/layout/activity_main.xml" value="0.3432971014492754" />
         <entry key="..\:/Projekty/CSGOTeamGenerator/app/src/main/res/layout/card_layout.xml" value="0.3451086956521739" />
         <entry key="..\:/Projekty/CSGOTeamGenerator/app/src/main/res/layout/drawer_selected_item.xml" value="0.253125" />
         <entry key="..\:/Projekty/CSGOTeamGenerator/app/src/main/res/layout/fragment_generate.xml" value="0.33" />
-        <entry key="..\:/Projekty/CSGOTeamGenerator/app/src/main/res/layout/fragment_player_add.xml" value="0.18541666666666667" />
+        <entry key="..\:/Projekty/CSGOTeamGenerator/app/src/main/res/layout/fragment_player_add.xml" value="0.33" />
         <entry key="..\:/Projekty/CSGOTeamGenerator/app/src/main/res/layout/fragment_player_list.xml" value="0.18541666666666667" />
         <entry key="..\:/Projekty/CSGOTeamGenerator/app/src/main/res/layout/fragment_sniper.xml" value="0.17831813576494426" />
         <entry key="..\:/Projekty/CSGOTeamGenerator/app/src/main/res/layout/header_layout.xml" value="0.15213675213675212" />

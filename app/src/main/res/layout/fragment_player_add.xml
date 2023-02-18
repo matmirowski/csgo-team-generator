@@ -48,10 +48,55 @@
             android:padding="16dp"
             android:orientation="vertical" >
 
-            <Button
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Test" />
+                android:textColor="@color/gray"
+                android:layout_marginBottom="8dp"
+                android:text="Nickname" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:hint="@string/player_nickname"
+                android:ems="15"
+                android:drawablePadding="10dp"
+                android:paddingStart="8dp"
+                android:background="@drawable/custom_input"
+                android:textColorHint="@color/text_gray_dark"
+                android:textColor="@color/text_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/gray"
+                android:layout_marginBottom="8dp"
+                android:text="Role" />
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sniper"
+                    android:textColor="@color/gray" />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/rifler"
+                    android:textColor="@color/gray" />
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/igl"
+                    android:textColor="@color/gray" />
+
+            </RadioGroup>
+
 
         </LinearLayout>
 

@@ -16,5 +16,7 @@
     <color name="rifler">#145308</color>
     <color name="igl">#092554</color>
     <color name="dark_gray">#171717</color>
+    <color name="darker_gray">#121212</color>
     <color name="transparent">#ffffff00</color>
+    <color name="text_gray_dark">#858585</color>
 </resources>

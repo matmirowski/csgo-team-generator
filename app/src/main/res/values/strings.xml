@@ -13,6 +13,7 @@
     <string name="riflers_tab">Riflers</string>
     <string name="igls_tab">IGLs</string>
     <string name="share">Share</string>
+    <string name="player_nickname">Player nickname</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
