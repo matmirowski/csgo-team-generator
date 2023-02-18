@@ -79,7 +79,8 @@ public class PlayerListFragment extends Fragment {
 
         // set theme
         getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.sniper));
-        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.dark_gray));
+        //getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.dark_gray));
+        getActivity().getWindow().setStatusBarColor(Color.BLACK);
         currentColor = getResources().getColor(R.color.sniper);
 
         // setup viewpager

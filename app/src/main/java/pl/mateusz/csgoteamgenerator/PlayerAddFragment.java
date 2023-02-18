@@ -22,6 +22,8 @@ public class PlayerAddFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.appbar_color));
+        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.appbar_color));
         setupToolbar();
     }
 
@@ -34,6 +36,7 @@ public class PlayerAddFragment extends Fragment {
 //        toolbar.setBackgroundColor(getResources().getColor(R.color.appbar_color));
         toolbar.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 getActivity(),
