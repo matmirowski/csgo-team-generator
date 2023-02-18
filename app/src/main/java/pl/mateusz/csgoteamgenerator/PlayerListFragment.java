@@ -79,7 +79,7 @@ public class PlayerListFragment extends Fragment {
 
         // set theme
         getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.sniper));
-        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.test));
+        getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.dark_gray));
         currentColor = getResources().getColor(R.color.sniper);
 
         // setup viewpager
@@ -95,7 +95,7 @@ public class PlayerListFragment extends Fragment {
         // hide default toolbar and set new with drawerlayout setup
         ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
         Toolbar listToolbar = getActivity().findViewById(R.id.player_list_toolbar);
-        listToolbar.setBackgroundColor(getResources().getColor(R.color.test));
+        listToolbar.setBackgroundColor(getResources().getColor(R.color.dark_gray));
         listToolbar.setTitle("List of best Polish players");
         ((AppCompatActivity) getActivity()).setSupportActionBar(listToolbar);
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
