@@ -83,7 +83,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    private void addRecord(SQLiteDatabase db, String name, Role role) {
+    public void addRecord(SQLiteDatabase db, String name, Role role) {
         ContentValues values = new ContentValues();
         values.put("NAME", name);
         values.put("ROLE", role.toString());

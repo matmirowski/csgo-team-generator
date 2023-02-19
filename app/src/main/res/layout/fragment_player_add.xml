@@ -78,6 +78,7 @@
                 android:textColor="@color/gray" />
 
             <RadioGroup
+                android:id="@+id/role_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -85,15 +86,17 @@
                 android:paddingEnd="170dp">
 
                 <RadioButton
+                    android:id="@+id/sniper_radio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:checked="true"
+                    android:checked="false"
                     android:text="@string/sniper"
                     android:textColor="@color/text_gray_dark"
                     android:textSize="17sp" />
 
                 <RadioButton
+                    android:id="@+id/rifler_radio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
@@ -102,6 +105,7 @@
                     android:textSize="17sp" />
 
                 <RadioButton
+                    android:id="@+id/igl_radio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/igl"
@@ -194,6 +198,7 @@
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_player_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"

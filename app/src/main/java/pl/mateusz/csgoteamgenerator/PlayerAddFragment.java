@@ -1,9 +1,13 @@
 package pl.mateusz.csgoteamgenerator;
 
 import android.content.res.ColorStateList;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -97,6 +102,10 @@ public class PlayerAddFragment extends Fragment {
         // checkButton onclick
         Button liquipediaCheckButton = getActivity().findViewById(R.id.add_player_liquipedia_check_button);
         liquipediaCheckButton.setOnClickListener(e -> onLiquipediaCheckClick());
+
+        // fab onclick
+        FloatingActionButton fab = getActivity().findViewById(R.id.add_player_fab);
+        fab.setOnClickListener(e -> onAddPlayerClick());
     }
 
     private void setupToolbar() {
@@ -151,6 +160,43 @@ public class PlayerAddFragment extends Fragment {
             Toast.makeText(getActivity(), "Please enter nickname", Toast.LENGTH_SHORT).show();
         } else {
             new CheckCorrectNicknameTask().execute(name);
+        }
+    }
+
+    private void onAddPlayerClick() {
+        EditText nickEditText = getActivity().findViewById(R.id.add_player_nick_text);
+        String name = nickEditText.getText().toString();
+        RadioGroup roleGroup = getActivity().findViewById(R.id.role_group);
+        int roleId = roleGroup.getId();
+        Role role = null;
+        switch (roleId) {
+            case R.id.sniper_radio:
+                role = Role.Sniper;
+                break;
+            case R.id.rifler_radio:
+                role = Role.Rifler;
+                break;
+            case R.id.igl_radio:
+                role = Role.IGL;
+                break;
+            default:
+                Toast.makeText(getActivity(), "Please choose role first", Toast.LENGTH_SHORT).show();
+                return;
+        }
+        if (name.equals("")) {
+            // if name is empty
+            Toast.makeText(getActivity(), "Please enter nickname", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            MyDatabaseHelper helper = new MyDatabaseHelper(getActivity());
+            SQLiteDatabase db = helper.getWritableDatabase();
+            helper.addRecord(db, name, role);
+
+        } catch (SQLiteException e) {
+            Log.e("ERR", "Error while putting player into database", e);
+            Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT).show();
+            return;
         }
     }
 }
