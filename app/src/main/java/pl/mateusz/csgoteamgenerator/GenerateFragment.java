@@ -41,6 +41,7 @@ import java.net.URL;
 import java.util.Random;
 
 public class GenerateFragment extends Fragment {
+    //TODO round button corners?
     private static final String liquipediaURL = "https://liquipedia.net/counterstrike/";
     private final ImageView[] playerImageViews = new ImageView[5];
     private final TextView[] playerTextViews = new TextView[5];
