@@ -60,6 +60,7 @@ public class GenerateFragment extends Fragment {
         String name;
         String url;
         int index;
+        String imageSource;
 
         /**
          * Creates a player.
@@ -68,10 +69,11 @@ public class GenerateFragment extends Fragment {
          * @param index index of location, where player should appear (0 - sniper, 1-3 - rifler,
          *             4 - igl)
          */
-        public Player(String name, String url, int index) {
+        public Player(String name, String url, int index, String imageSource) {
             this.name = name;
             this.url = url;
             this.index = index;
+            this.imageSource = imageSource;
         }
     }
 
@@ -81,7 +83,7 @@ public class GenerateFragment extends Fragment {
      * There aren't any parameters for background thread. Array of strings is being passed to
      * onPostExecute, which launches PlayerImageURLTask, when all nicknames are obtained.
      */
-    private class RandomNicknamesFromDatabaseTask extends AsyncTask<Void, Void, String[]> {
+    private class RandomNicknamesFromDatabaseTask extends AsyncTask<Void, Void, Player[]> {
 
         /**
          * @return String array with 5 random players from database
@@ -89,23 +91,23 @@ public class GenerateFragment extends Fragment {
          * Returns null if SQLiteException was thrown.
          */
         @Override
-        protected String[] doInBackground(Void... voids) {
+        protected Player[] doInBackground(Void... voids) {
             MyDatabaseHelper dbHelper = new MyDatabaseHelper(getActivity());
             try {
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
                 // cursors containing all players with specific role
                 Cursor iglCursor = db.query("PLAYERS",
-                        new String[]{"NAME"},
+                        new String[]{"NAME", "IMAGESRC"},
                         "ROLE = ?",
                         new String[] {"IGL"},
                         null, null, null);
                 Cursor riflerCursor = db.query("PLAYERS",
-                        new String[]{"NAME"},
+                        new String[]{"NAME", "IMAGESRC"},
                         "ROLE = ?",
                         new String[] {"Rifler"},
                         null, null, null);
                 Cursor sniperCursor = db.query("PLAYERS",
-                        new String[]{"NAME"},
+                        new String[]{"NAME", "IMAGESRC"},
                         "ROLE = ?",
                         new String[] {"Sniper"},
                         null, null, null);
@@ -117,14 +119,18 @@ public class GenerateFragment extends Fragment {
                 sniperCursor.moveToFirst();
                 sniperCursor.move(rand.nextInt(sniperCursor.getCount()));
 
-                // temporary array containing sniper and igl
-                String[] results = new String[5];
-                results[0] = sniperCursor.getString(0);
-                results[4] = iglCursor.getString(0);
+                // create sniper and igl Player instances and put them in an array
+                Player sniper = new Player(sniperCursor.getString(0), null, 0,
+                        sniperCursor.getString(1));
+                Player igl = new Player(iglCursor.getString(0), null, 0,
+                        iglCursor.getString(1));
+                Player[] results = new Player[5];
+                results[0] = sniper;
+                results[4] = igl;
 
                 // we use method that gets random 3 riflers from cursor and puts them in an array
                 // with igl and sniper (riflers are in indexes 1-3)
-                String[] finalResults = getRandomRiflersFromCursor(riflerCursor, results);
+                Player[] finalResults = getRandomRiflersFromCursor(riflerCursor, results);
                 iglCursor.close();
                 sniperCursor.close();
                 riflerCursor.close();
@@ -137,13 +143,16 @@ public class GenerateFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String[] names) {
-            if (names != null) {
+        protected void onPostExecute(Player[] players) {
+            if (players != null) {
+
                 // "Niko" is a test case to avoid error while displaying first player
-                new PlayerImageURLTask().execute(new Player("Niko", null, -1));
-                for (int i = 0; i < 5; i++) {
-                    Log.d("INFO", "Generated playername: " + names[i]);
-                    new PlayerImageURLTask().execute(new Player(names[i], null, i));
+                new PlayerImageURLTask().execute(new Player("Niko", null, -1,
+                        "LIQUIPEDIA"));
+
+                for (Player player : players) {
+                    Log.d("INFO", "Generated playername: " + player.name);
+                    new PlayerImageURLTask().execute(player);
                 }
             } else {
                 Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT)
@@ -160,11 +169,9 @@ public class GenerateFragment extends Fragment {
      * it in the ImageView.
      */
     private class PlayerImageURLTask extends AsyncTask<Player, Void, String> {
-        private int index;
-        private String name;
-
+        private Player player;
         /**
-         * @param params information about player
+         * @param player information about player
          * @return url of player image from liquipedia (or hltv default photo if there's no picture
          * on liquipedia)
          * Returns null if there was thrown an exception.
@@ -172,9 +179,8 @@ public class GenerateFragment extends Fragment {
         @Override
         protected String doInBackground(Player... params) {
             try {
-                name = params[0].name;
-                index = params[0].index;
-                String playerProfileURL = liquipediaURL + name;
+                player = params[0];
+                String playerProfileURL = liquipediaURL + player.name;
 
                 // site scraping using Jsoup
                 Element doc = Jsoup
@@ -203,11 +209,12 @@ public class GenerateFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String imageURL) {
-            if (index == -1) // test case to avoid error while first attempt
+            if (player.index == -1) // test case to avoid error while first attempt
                 return;
             if (imageURL != null) {
-                Log.d("INFO", "Index URL: " + index);
-                new PlayerImageToDrawableTask().execute(new Player(name, imageURL, index));
+                Log.d("INFO", "Index URL: " + player.index);
+                player.url = imageURL;
+                new PlayerImageToDrawableTask().execute(player);
             } else {
                 Toast.makeText(getActivity(), "Unable to load images", Toast.LENGTH_SHORT)
                         .show();
@@ -329,7 +336,7 @@ public class GenerateFragment extends Fragment {
      * @param results string array containing sniper on index 0 and igl on index 4
      * @return string array filled with all randomized players
      */
-    private String[] getRandomRiflersFromCursor(Cursor cursor, String[] results) {
+    private Player[] getRandomRiflersFromCursor(Cursor cursor, Player[] results) {
         Random rand = new Random();
         int correctPlayers = 0;
         int index = 1;
@@ -338,14 +345,14 @@ public class GenerateFragment extends Fragment {
             cursor.move(rand.nextInt(cursor.getCount()));
             String tempName = cursor.getString(0);
             boolean isNameRepeated = false;
-            for (String name : results) {
-                if (tempName.equals(name)) {
+            for (Player player : results) {
+                if (tempName.equals(player.name)) {
                     isNameRepeated = true;
                     break;
                 }
             }
             if (!isNameRepeated) {
-                results[index] = tempName;
+                results[index] = new Player(tempName, null, index, cursor.getString(1));
                 correctPlayers++;
                 index++;
             }

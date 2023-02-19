@@ -81,6 +81,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             addRecord(db, "Prism", Role.Rifler);
             addRecord(db, "Enzo", Role.Rifler);
         }
+        if (oldVersion < 3) { // new column containing image source
+            db.execSQL("ALTER TABLE PLAYERS ADD IMAGESRC TEXT NOT NULL DEFAULT 'LIQUIPEDIA'");
+        }
     }
 
     public void addRecord(SQLiteDatabase db, String name, Role role) {
