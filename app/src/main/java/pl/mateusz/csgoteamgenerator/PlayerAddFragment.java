@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +33,14 @@ import org.jsoup.nodes.Element;
 import java.io.IOException;
 
 public class PlayerAddFragment extends Fragment {
+    private EditText nickEditText;
+    private RadioGroup roleGroup;
+    private Switch liquipediaSwitch;
+    private Switch defaultSwitch;
+    private TextView liquipediaHint;
+    private Button liquipediaCheckButton;
+    private AppCompatCheckBox liquipediaSuccessCheckbox;
+    private FloatingActionButton fab;
 
     private class CheckCorrectNicknameTask extends AsyncTask<String, Void, Boolean> {
         private String message = "";
@@ -70,14 +79,11 @@ public class PlayerAddFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean success) {
             if (success) {
-                CheckBox successCheckbox = getActivity().findViewById(R.id.add_player_liquipedia_success_checkbox);
-                Button checkButton = getActivity().findViewById(R.id.add_player_liquipedia_check_button);
-                successCheckbox.setButtonTintList(ColorStateList.valueOf(Color.GREEN));
-                successCheckbox.setChecked(true);
+                liquipediaSuccessCheckbox.setButtonTintList(ColorStateList.valueOf(Color.GREEN));
+                liquipediaSuccessCheckbox.setChecked(true);
             }
             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override
@@ -90,21 +96,25 @@ public class PlayerAddFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        // assign views to variables
+        nickEditText = getActivity().findViewById(R.id.add_player_nick_text);
+        roleGroup = getActivity().findViewById(R.id.role_group);
+        liquipediaSwitch = getActivity().findViewById(R.id.add_player_liquipedia_switch);
+        defaultSwitch = getActivity().findViewById(R.id.add_player_default_switch);
+        liquipediaHint = getActivity().findViewById(R.id.add_player_liquipedia_hint);
+        liquipediaCheckButton = getActivity().findViewById(R.id.add_player_liquipedia_check_button);
+        liquipediaSuccessCheckbox = getActivity()
+                .findViewById(R.id.add_player_liquipedia_success_checkbox);
+        fab = getActivity().findViewById(R.id.add_player_fab);
+
         // theme and toolbar
         getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.appbar_color));
         getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.appbar_color));
         setupToolbar();
 
-        // switch onclick
-        Switch liquipediaSourceSwitch = getActivity().findViewById(R.id.add_player_liquipedia_switch);
-        liquipediaSourceSwitch.setOnClickListener(e -> onLiquipediaSourceClick());
-
-        // checkButton onclick
-        Button liquipediaCheckButton = getActivity().findViewById(R.id.add_player_liquipedia_check_button);
+        // assign onClickListeners
+        liquipediaSwitch.setOnClickListener(e -> onLiquipediaSourceClick());
         liquipediaCheckButton.setOnClickListener(e -> onLiquipediaCheckClick());
-
-        // fab onclick
-        FloatingActionButton fab = getActivity().findViewById(R.id.add_player_fab);
         fab.setOnClickListener(e -> onAddPlayerClick());
     }
 
@@ -114,7 +124,6 @@ public class PlayerAddFragment extends Fragment {
         }
         Toolbar toolbar = getActivity().findViewById(R.id.add_player_toolbar);
         toolbar.setTitle("Add new wholesome player");
-//        toolbar.setBackgroundColor(getResources().getColor(R.color.appbar_color));
         toolbar.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
@@ -132,29 +141,22 @@ public class PlayerAddFragment extends Fragment {
     }
 
     private void onLiquipediaSourceClick() {
-        Switch liquipediaSourceSwitch = getActivity().findViewById(R.id.add_player_liquipedia_switch);
-        Switch defaultImageSwitch = getActivity().findViewById(R.id.add_player_default_switch);
-        TextView liquipediaHintTextView = getActivity().findViewById(R.id.add_player_liquipedia_hint);
-        Button liquipediaCheckButton = getActivity().findViewById(R.id.add_player_liquipedia_check_button);
-        CheckBox liquipediaSuccessCheckbox = getActivity().findViewById(R.id.add_player_liquipedia_success_checkbox);
-
-        if (liquipediaSourceSwitch.isChecked()) {
+        if (liquipediaSwitch.isChecked()) {
             // Liquipedia image source
-            liquipediaHintTextView.setVisibility(View.VISIBLE);
+            liquipediaHint.setVisibility(View.VISIBLE);
             liquipediaCheckButton.setVisibility(View.VISIBLE);
             liquipediaSuccessCheckbox.setVisibility(View.VISIBLE);
-            defaultImageSwitch.setVisibility(View.GONE);
+            defaultSwitch.setVisibility(View.GONE);
         } else {
             // Custom image source
-            liquipediaHintTextView.setVisibility(View.GONE);
+            liquipediaHint.setVisibility(View.GONE);
             liquipediaCheckButton.setVisibility(View.GONE);
             liquipediaSuccessCheckbox.setVisibility(View.GONE);
-            defaultImageSwitch.setVisibility(View.VISIBLE);
+            defaultSwitch.setVisibility(View.VISIBLE);
         }
     }
 
     private void onLiquipediaCheckClick() {
-        EditText nickEditText = getActivity().findViewById(R.id.add_player_nick_text);
         String name = nickEditText.getText().toString();
         if (name.equals("")) {
             Toast.makeText(getActivity(), "Please enter nickname", Toast.LENGTH_SHORT).show();
@@ -164,11 +166,21 @@ public class PlayerAddFragment extends Fragment {
     }
 
     private void onAddPlayerClick() {
-        EditText nickEditText = getActivity().findViewById(R.id.add_player_nick_text);
         String name = nickEditText.getText().toString();
-        RadioGroup roleGroup = getActivity().findViewById(R.id.role_group);
+        if (name.equals("")) {
+            // if name is empty
+            Toast.makeText(getActivity(), "Please enter nickname", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (liquipediaSwitch.isChecked() && !liquipediaSuccessCheckbox.isChecked()) {
+            // if user choose liquipedia but nickname isnt checked yet
+            Toast.makeText(getActivity(), "Please check if nickname is correct first",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         int roleId = roleGroup.getId();
-        Role role = null;
+        Role role;
         switch (roleId) {
             case R.id.sniper_radio:
                 role = Role.Sniper;
@@ -180,14 +192,11 @@ public class PlayerAddFragment extends Fragment {
                 role = Role.IGL;
                 break;
             default:
-                Toast.makeText(getActivity(), "Please choose role first", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Please choose role first", Toast.LENGTH_SHORT)
+                        .show();
                 return;
         }
-        if (name.equals("")) {
-            // if name is empty
-            Toast.makeText(getActivity(), "Please enter nickname", Toast.LENGTH_SHORT).show();
-            return;
-        }
+
         try {
             MyDatabaseHelper helper = new MyDatabaseHelper(getActivity());
             SQLiteDatabase db = helper.getWritableDatabase();
