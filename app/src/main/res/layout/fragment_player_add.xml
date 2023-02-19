@@ -131,6 +131,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/custom_input"
                 android:text="Liquipedia  "
+                android:checked="false"
                 android:ems="8"
                 android:textColor="@color/text_gray_dark"
                 android:textSize="17sp" />
@@ -184,6 +185,34 @@
                     android:enabled="false" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/add_player_image"
+                    android:layout_width="120dp"
+                    android:layout_height="150dp"
+                    android:layout_marginVertical="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/default_player" />
+
+                <Button
+                    android:id="@+id/add_player_upload_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upload your avatar"
+                    android:layout_gravity="center"
+                    android:background="@color/black"
+                    android:paddingHorizontal="10dp"
+                    android:textColor="@color/gray" />
+
+            </LinearLayout>
+
+
 
             <Button
                 android:layout_width="5dp"

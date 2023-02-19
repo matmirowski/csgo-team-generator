@@ -36,7 +36,7 @@ public abstract class AbstractRoleListFragment extends ListFragment {
                         new int[] {android.R.id.text1},
                         0);
             } catch (SQLiteException e) {
-                Log.e("ERR", "Error while setting up adapter in SniperFragment", e);
+                Log.e("ERR", "Error while setting up adapter", e);
                 return null;
             }
         }

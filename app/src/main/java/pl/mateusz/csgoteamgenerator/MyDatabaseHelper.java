@@ -5,10 +5,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 2;
-    private static final String DB_NAME = null; //TODO
+    private static final int DB_VERSION = 3;
+    private static final String DB_NAME = "test2"; //TODO
 
     public MyDatabaseHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -27,7 +28,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         updateDatabase(db, oldVersion);
     }
-
 
     private void updateDatabase(SQLiteDatabase db, int oldVersion) {
         if (oldVersion < 1) { // players with photos
@@ -91,5 +91,15 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         values.put("NAME", name);
         values.put("ROLE", role.toString());
         db.insert("PLAYERS", null, values);
+    }
+
+    public void addRecord(SQLiteDatabase db, String name, Role role, ImageSource imgSrc) {
+        ContentValues values = new ContentValues();
+        values.put("NAME", name);
+        values.put("ROLE", role.toString());
+        values.put("IMAGESRC", imgSrc.toString());
+        db.insert("PLAYERS", null, values);
+        Log.d("DATABASE", "Added player to database: " + name + " role: " +
+                role.toString() + " img: " + imgSrc.toString());
     }
 }

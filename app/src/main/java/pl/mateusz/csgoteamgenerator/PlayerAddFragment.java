@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -41,6 +42,8 @@ public class PlayerAddFragment extends Fragment {
     private Button liquipediaCheckButton;
     private AppCompatCheckBox liquipediaSuccessCheckbox;
     private FloatingActionButton fab;
+    private ImageView playerImageView;
+    private Button uploadImageButton;
 
     private class CheckCorrectNicknameTask extends AsyncTask<String, Void, Boolean> {
         private String message = "";
@@ -82,7 +85,7 @@ public class PlayerAddFragment extends Fragment {
                 liquipediaSuccessCheckbox.setButtonTintList(ColorStateList.valueOf(Color.GREEN));
                 liquipediaSuccessCheckbox.setChecked(true);
             }
-            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -106,6 +109,8 @@ public class PlayerAddFragment extends Fragment {
         liquipediaSuccessCheckbox = getActivity()
                 .findViewById(R.id.add_player_liquipedia_success_checkbox);
         fab = getActivity().findViewById(R.id.add_player_fab);
+        playerImageView = getActivity().findViewById(R.id.add_player_image);
+        uploadImageButton = getActivity().findViewById(R.id.add_player_upload_button);
 
         // theme and toolbar
         getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.appbar_color));
@@ -147,12 +152,16 @@ public class PlayerAddFragment extends Fragment {
             liquipediaCheckButton.setVisibility(View.VISIBLE);
             liquipediaSuccessCheckbox.setVisibility(View.VISIBLE);
             defaultSwitch.setVisibility(View.GONE);
+            playerImageView.setVisibility(View.GONE);
+            uploadImageButton.setVisibility(View.GONE);
         } else {
             // Custom image source
             liquipediaHint.setVisibility(View.GONE);
             liquipediaCheckButton.setVisibility(View.GONE);
             liquipediaSuccessCheckbox.setVisibility(View.GONE);
             defaultSwitch.setVisibility(View.VISIBLE);
+            playerImageView.setVisibility(View.VISIBLE);
+            uploadImageButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -179,7 +188,8 @@ public class PlayerAddFragment extends Fragment {
             return;
         }
 
-        int roleId = roleGroup.getId();
+        // get role
+        int roleId = roleGroup.getCheckedRadioButtonId();
         Role role;
         switch (roleId) {
             case R.id.sniper_radio:
@@ -197,11 +207,23 @@ public class PlayerAddFragment extends Fragment {
                 return;
         }
 
-        try {
+        // get image source
+        ImageSource imgSource;
+        if (liquipediaSwitch.isChecked())
+            imgSource = ImageSource.LIQUIPEDIA;
+        else if (defaultSwitch.isChecked())
+            imgSource = ImageSource.DEFAULT;
+        else
+            imgSource = ImageSource.CUSTOM;
+
+        // add record
+        try { //TODO async
             MyDatabaseHelper helper = new MyDatabaseHelper(getActivity());
             SQLiteDatabase db = helper.getWritableDatabase();
-            helper.addRecord(db, name, role);
-
+            helper.addRecord(db, name, role, imgSource);
+            db.close();
+            Toast.makeText(getActivity(), "Player added sucessfully", Toast.LENGTH_SHORT)
+                    .show();
         } catch (SQLiteException e) {
             Log.e("ERR", "Error while putting player into database", e);
             Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT).show();

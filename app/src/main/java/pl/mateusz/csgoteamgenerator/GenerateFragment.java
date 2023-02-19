@@ -122,7 +122,7 @@ public class GenerateFragment extends Fragment {
                 // create sniper and igl Player instances and put them in an array
                 Player sniper = new Player(sniperCursor.getString(0), null, 0,
                         sniperCursor.getString(1));
-                Player igl = new Player(iglCursor.getString(0), null, 0,
+                Player igl = new Player(iglCursor.getString(0), null, 4,
                         iglCursor.getString(1));
                 Player[] results = new Player[5];
                 results[0] = sniper;
@@ -152,7 +152,11 @@ public class GenerateFragment extends Fragment {
 
                 for (Player player : players) {
                     Log.d("INFO", "Generated playername: " + player.name);
-                    new PlayerImageURLTask().execute(player);
+                    if (!player.imageSource.equals(ImageSource.CUSTOM.toString()))
+                        // image source is either LIQUIPEDIA or DEFAULT
+                        new PlayerImageURLTask().execute(player);
+                    else
+                        ;
                 }
             } else {
                 Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT)
@@ -171,7 +175,7 @@ public class GenerateFragment extends Fragment {
     private class PlayerImageURLTask extends AsyncTask<Player, Void, String> {
         private Player player;
         /**
-         * @param player information about player
+         * @param params information about player
          * @return url of player image from liquipedia (or hltv default photo if there's no picture
          * on liquipedia)
          * Returns null if there was thrown an exception.
@@ -180,6 +184,8 @@ public class GenerateFragment extends Fragment {
         protected String doInBackground(Player... params) {
             try {
                 player = params[0];
+                if (player.imageSource.equals(ImageSource.DEFAULT.toString()))
+                    return "https://i.imgur.com/KQDl2wD.png";
                 String playerProfileURL = liquipediaURL + player.name;
 
                 // site scraping using Jsoup
@@ -346,7 +352,7 @@ public class GenerateFragment extends Fragment {
             String tempName = cursor.getString(0);
             boolean isNameRepeated = false;
             for (Player player : results) {
-                if (tempName.equals(player.name)) {
+                if (player != null && tempName.equals(player.name)) {
                     isNameRepeated = true;
                     break;
                 }
@@ -425,7 +431,7 @@ public class GenerateFragment extends Fragment {
             case R.id.action_share:
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
-                String shareText = "Check out my new team, which will save Polish CS:GO Scene!";
+                String shareText = "Check out the team that will save Polish CS:GO Scene!";
                 StringBuilder builder = new StringBuilder(shareText);
                 for (int i = 0; i < 5; i++) {
                     builder.append("\n").append(playerTextViews[i].getText());
