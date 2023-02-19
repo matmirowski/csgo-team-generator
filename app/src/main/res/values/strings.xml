@@ -14,6 +14,9 @@
     <string name="igls_tab">IGLs</string>
     <string name="share">Share</string>
     <string name="player_nickname">Player nickname</string>
+    <string name="hint_liquipedia">Hint: Make sure that player name is the same as his Liquipedia URL suffix
+        \nExample: https://liquipedia.net/counterstrike/NiKo
+    \nPlayername: NiKo</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

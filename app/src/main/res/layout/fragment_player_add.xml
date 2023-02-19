@@ -58,6 +58,7 @@
                 android:textColor="@color/gray" />
 
             <EditText
+                android:id="@+id/add_player_nick_text"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:background="@drawable/custom_input"
@@ -79,7 +80,9 @@
             <RadioGroup
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="@drawable/custom_input"
+                android:paddingEnd="170dp">
 
                 <RadioButton
                     android:layout_width="wrap_content"
@@ -115,12 +118,76 @@
                 android:textColor="@color/gray" />
 
             <Switch
+                android:id="@+id/add_player_liquipedia_switch"
+                android:paddingTop="5dp"
+                android:paddingStart="10dp"
+                android:paddingBottom="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/custom_input"
                 android:text="Liquipedia  "
+                android:ems="8"
                 android:textColor="@color/text_gray_dark"
-                android:textSize="17sp"
-                android:layout_marginBottom="200dp"/>
+                android:textSize="17sp" />
+
+            <Switch
+                android:layout_marginTop="10dp"
+                android:id="@+id/add_player_default_switch"
+                android:paddingTop="5dp"
+                android:paddingStart="10dp"
+                android:paddingBottom="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_input"
+                android:text="Default  "
+                android:ems="8"
+                android:textColor="@color/text_gray_dark"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/add_player_liquipedia_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/hint_liquipedia"
+                android:visibility="gone"
+                android:textColor="@color/gray" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/add_player_liquipedia_check_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/appbar_color"
+                    android:visibility="visible"
+                    android:layout_marginEnd="28dp"
+                    android:text="CHECK" />
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/add_player_liquipedia_success_checkbox"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:buttonTint="@color/sniper"
+                    android:enabled="false" />
+
+            </LinearLayout>
+
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="200dp"
+                android:text="ADD PLAYER"
+                android:textColor="@color/black" />
 
         </LinearLayout>
 
