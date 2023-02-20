@@ -1,5 +1,7 @@
 package pl.mateusz.csgoteamgenerator;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -63,8 +65,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_add_player:
                 fragment = new PlayerAddFragment();
                 break;
-            case R.id.nav_settings:
-                // TODO
+            case R.id.nav_about:
+                DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+                drawerLayout.closeDrawer(GravityCompat.START);
+                String githubUrl = "https://github.com/matmirowski/csgo-team-generator";
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(githubUrl));
+                startActivity(intent);
                 return false;
         }
 
