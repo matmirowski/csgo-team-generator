@@ -117,4 +117,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.insert("AVATARS", null, values);
         Log.d("DATABASE", "Added image to database: " + name);
     }
+
+    public void removePlayer(SQLiteDatabase db, String name, ImageSource imgSrc) {
+        if (imgSrc == ImageSource.CUSTOM) {
+            db.delete("AVATARS", "NAME = ?", new String[]{name});
+        }
+        db.delete("PLAYERS", "NAME = ?", new String[]{name});
+        Log.d("DATABASE", "Removed player: " + name);
+    }
 }

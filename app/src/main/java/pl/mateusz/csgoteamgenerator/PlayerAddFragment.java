@@ -11,7 +11,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -278,9 +281,34 @@ public class PlayerAddFragment extends Fragment {
                     helper.addAvatar(db, name, imageAsByteArray);
                 }
             }
-            db.close();
-            Toast.makeText(getActivity(), "Player added sucessfully", Toast.LENGTH_SHORT)
-                    .show();
+
+            // move to GenerateFragment and display Snackbar
+            String snackbarText = "Player added successfully";
+            Snackbar addPlayerSnackbar = Snackbar.make(getActivity().findViewById(R.id.drawer_layout),
+                    snackbarText, Snackbar.LENGTH_LONG);
+            addPlayerSnackbar.setAction("UNDO", e -> {
+                    helper.removePlayer(db, name, imgSource);
+                    Toast.makeText(getActivity(), "Player removed!", Toast.LENGTH_SHORT).show();
+            });
+            // close db after Snackbar is closed
+            addPlayerSnackbar.addCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+                    db.close();
+                }
+            });
+            addPlayerSnackbar.show();
+
+            // replace current Fragment to PlayerListFragment //TODO maybe to generatefragment?
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.fragment_container, new PlayerListFragment());
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.addToBackStack(null);
+            ft.commit();
+            // select appropriate item in drawer
+            NavigationView navView = getActivity().findViewById(R.id.nav_view);
+            navView.setCheckedItem(R.id.nav_player_list);
         } catch (SQLiteException e) {
             Log.e("ERR", "Error while putting player into database", e);
             Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT).show();
