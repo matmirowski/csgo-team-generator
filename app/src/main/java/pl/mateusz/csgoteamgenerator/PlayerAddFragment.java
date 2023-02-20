@@ -1,31 +1,29 @@
 package pl.mateusz.csgoteamgenerator;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
@@ -36,6 +34,7 @@ import android.widget.Toast;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -55,14 +54,16 @@ public class PlayerAddFragment extends Fragment {
     private Bitmap playerImageBitmap;
     private Button uploadImageButton;
     private Boolean photoSelected;
+    private TextView nickCaption;
 
     private class CheckCorrectNicknameTask extends AsyncTask<String, Void, Boolean> {
         private String message = "";
+        private String name;
 
         @Override
         protected Boolean doInBackground(String... params) {
             try {
-                String name = params[0];
+                name = params[0];
                 String playerProfileURL = GenerateFragment.liquipediaURL + name;
                 // site scraping using Jsoup
                 Element doc = Jsoup
@@ -92,9 +93,14 @@ public class PlayerAddFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Boolean success) {
+            if (name.equals("ILLa")) { // test case initiated onStart to avoid Jsoup errors
+                return;
+            }
             if (success) {
                 liquipediaSuccessCheckbox.setButtonTintList(ColorStateList.valueOf(Color.GREEN));
                 liquipediaSuccessCheckbox.setChecked(true);
+                nickEditText.setFocusable(false);
+                nickCaption.setText(getString(R.string.locked));
             }
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
         }
@@ -122,6 +128,7 @@ public class PlayerAddFragment extends Fragment {
         fab = getActivity().findViewById(R.id.add_player_fab);
         playerImageView = getActivity().findViewById(R.id.add_player_image);
         uploadImageButton = getActivity().findViewById(R.id.add_player_upload_button);
+        nickCaption = getActivity().findViewById(R.id.add_player_nick_caption);
 
         // theme and toolbar
         getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.appbar_color));
@@ -130,9 +137,13 @@ public class PlayerAddFragment extends Fragment {
 
         // assign onClickListeners
         liquipediaSwitch.setOnClickListener(e -> onLiquipediaSourceClick());
+        defaultSwitch.setOnClickListener(e -> onDefaultSourceClick());
         liquipediaCheckButton.setOnClickListener(e -> onLiquipediaCheckClick());
         fab.setOnClickListener(e -> onAddPlayerClick());
         uploadImageButton.setOnClickListener(e -> onUploadImageClick());
+
+        // test case to avoid Jsoup errors
+        new CheckCorrectNicknameTask().execute("ILLa");
     }
 
     private void setupToolbar() {
@@ -170,19 +181,36 @@ public class PlayerAddFragment extends Fragment {
             // Custom image source
             liquipediaHint.setVisibility(View.GONE);
             liquipediaCheckButton.setVisibility(View.GONE);
+            liquipediaSuccessCheckbox.setChecked(false);
             liquipediaSuccessCheckbox.setVisibility(View.GONE);
             defaultSwitch.setVisibility(View.VISIBLE);
+            playerImageView.setVisibility(View.VISIBLE);
+            uploadImageButton.setVisibility(View.VISIBLE);
+            nickEditText.setFocusableInTouchMode(true);
+            nickCaption.setText(getString(R.string.nickname));
+        }
+    }
+
+    private void onDefaultSourceClick() {
+        if (defaultSwitch.isChecked()) {
+            // default image source
+            playerImageView.setVisibility(View.GONE);
+            uploadImageButton.setVisibility(View.GONE);
+        } else {
+            // custom image source
             playerImageView.setVisibility(View.VISIBLE);
             uploadImageButton.setVisibility(View.VISIBLE);
         }
     }
 
     private void onLiquipediaCheckClick() {
-        String name = nickEditText.getText().toString();
-        if (name.equals("")) {
-            Toast.makeText(getActivity(), "Please enter nickname", Toast.LENGTH_SHORT).show();
-        } else {
-            new CheckCorrectNicknameTask().execute(name);
+        if (!liquipediaSuccessCheckbox.isChecked()) {
+            String name = nickEditText.getText().toString();
+            if (name.equals("")) {
+                Toast.makeText(getActivity(), "Please enter nickname", Toast.LENGTH_SHORT).show();
+            } else {
+                new CheckCorrectNicknameTask().execute(name);
+            }
         }
     }
 
@@ -238,7 +266,7 @@ public class PlayerAddFragment extends Fragment {
         try { //TODO async
             MyDatabaseHelper helper = new MyDatabaseHelper(getActivity());
             SQLiteDatabase db = helper.getWritableDatabase();
-            helper.addRecord(db, name, role, imgSource);
+            helper.addPlayer(db, name, role, imgSource);
 
             // save player image if imagesource is custom
             if (imgSource == ImageSource.CUSTOM) {

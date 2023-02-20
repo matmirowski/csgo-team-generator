@@ -17,6 +17,8 @@
     <string name="hint_liquipedia">Hint: Make sure that player name is the same as his Liquipedia URL suffix
         \nExample: https://liquipedia.net/counterstrike/NiKo
     \nPlayername: NiKo</string>
+    <string name="locked">Nickname (locked)</string>
+    <string name="nickname">Nickname</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

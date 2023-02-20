@@ -37,6 +37,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/add_player_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/dark_gray"
@@ -51,10 +52,11 @@
             android:scrollbars="vertical">
 
             <TextView
+                android:id="@+id/add_player_nick_caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Nickname"
+                android:text="@string/nickname"
                 android:textColor="@color/gray" />
 
             <EditText
