@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import pl.mateusz.csgoteamgenerator.ListFragments.IglFragment;
 import pl.mateusz.csgoteamgenerator.ListFragments.RiflerFragment;
+import pl.mateusz.csgoteamgenerator.ListFragments.Sniper2Fragment;
 import pl.mateusz.csgoteamgenerator.ListFragments.SniperFragment;
 
 public class PlayerListFragment extends Fragment {
@@ -35,7 +36,7 @@ public class PlayerListFragment extends Fragment {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return new SniperFragment();
+                    return new Sniper2Fragment(); //TODO TEST!
                 case 1:
                     return new RiflerFragment();
                 case 2:
@@ -124,38 +125,39 @@ public class PlayerListFragment extends Fragment {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // set pager onPageChangeListener to change theme depending on current ViewPager page
-        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float v, int i1) {}
-
-            @Override
-            public void onPageScrollStateChanged(int position) {}
-
-            @Override
-            public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                        getActivity().getWindow().setNavigationBarColor(getResources()
-                                .getColor(R.color.sniper));
-                        tabLayout.setBackgroundColor(getResources().getColor(R.color.sniper));
-                        currentColor = getResources().getColor(R.color.sniper);
-                        break;
-                    case 1:
-                        getActivity().getWindow().setNavigationBarColor(getResources()
-                                .getColor(R.color.rifler));
-                        tabLayout.setBackgroundColor(getResources().getColor(R.color.rifler));
-                        currentColor = getResources().getColor(R.color.rifler);
-                        break;
-                    case 2:
-                        getActivity().getWindow().setNavigationBarColor(getResources()
-                                .getColor(R.color.igl));
-                        tabLayout.setBackgroundColor(getResources().getColor(R.color.igl));
-                        currentColor = getResources().getColor(R.color.igl);
-                        break;
-                }
-            }
-        });
+        //TODO
+//        // set pager onPageChangeListener to change theme depending on current ViewPager page
+//        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float v, int i1) {}
+//
+//            @Override
+//            public void onPageScrollStateChanged(int position) {}
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                switch (position) {
+//                    case 0:
+//                        getActivity().getWindow().setNavigationBarColor(getResources()
+//                                .getColor(R.color.sniper));
+//                        tabLayout.setBackgroundColor(getResources().getColor(R.color.sniper));
+//                        currentColor = getResources().getColor(R.color.sniper);
+//                        break;
+//                    case 1:
+//                        getActivity().getWindow().setNavigationBarColor(getResources()
+//                                .getColor(R.color.rifler));
+//                        tabLayout.setBackgroundColor(getResources().getColor(R.color.rifler));
+//                        currentColor = getResources().getColor(R.color.rifler);
+//                        break;
+//                    case 2:
+//                        getActivity().getWindow().setNavigationBarColor(getResources()
+//                                .getColor(R.color.igl));
+//                        tabLayout.setBackgroundColor(getResources().getColor(R.color.igl));
+//                        currentColor = getResources().getColor(R.color.igl);
+//                        break;
+//                }
+//            }
+//        });
     }
 
     @Override

@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 4;
-    private static final String DB_NAME = "test5"; //TODO
+    private static final String DB_NAME = "test7"; //TODO
 
     public MyDatabaseHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -20,7 +20,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE PLAYERS(" +
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "NAME TEXT," +
-                "ROLE TEXT)");
+                "ROLE TEXT, " +
+                "IMAGESRC TEXT)");
         updateDatabase(db, 0);
     }
 
@@ -81,9 +82,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             addPlayer(db, "Prism", Role.Rifler);
             addPlayer(db, "Enzo", Role.Rifler);
         }
-        if (oldVersion < 3) { // new column containing image source
-            db.execSQL("ALTER TABLE PLAYERS ADD IMAGESRC TEXT NOT NULL DEFAULT 'LIQUIPEDIA'");
-        }
         if (oldVersion < 4) {
             db.execSQL("CREATE TABLE AVATARS(" +
                     "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -97,6 +95,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("NAME", name);
         values.put("ROLE", role.toString());
+        values.put("IMAGESRC", "LIQUIPEDIA");
         db.insert("PLAYERS", null, values);
     }
 
