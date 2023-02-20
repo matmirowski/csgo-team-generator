@@ -278,6 +278,7 @@ public class PlayerAddFragment extends Fragment {
                 Bitmap selectedBitmap = BitmapFactory.decodeStream(imageStream);
                 playerImageView.setImageBitmap(selectedBitmap);
                 playerImageBitmap = selectedBitmap;
+                photoSelected = true;
             } catch (FileNotFoundException e) {
                 Toast.makeText(getActivity(), "Image not found!", Toast.LENGTH_SHORT).show();
             }

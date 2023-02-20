@@ -4,8 +4,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -156,7 +160,8 @@ public class GenerateFragment extends Fragment {
                         // image source is either LIQUIPEDIA or DEFAULT
                         new PlayerImageURLTask().execute(player);
                     else
-                        ;
+                        // image source is custom
+                        new PlayerImageCustomTask().execute(player);
                 }
             } else {
                 Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT)
@@ -269,6 +274,48 @@ public class GenerateFragment extends Fragment {
                 playerTemporaryNicknames[index] = name;
             } else {
                 Toast.makeText(getActivity(), "Unable to load images", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
+    }
+
+    private class PlayerImageCustomTask extends AsyncTask<Player, Void, Bitmap> {
+        Player player;
+
+        @Override
+        protected Bitmap doInBackground(Player... players) {
+            player = players[0];
+            SQLiteOpenHelper helper = new MyDatabaseHelper(getActivity());
+            try {
+                SQLiteDatabase db = helper.getReadableDatabase();
+                Cursor imageCursor = db.query("AVATARS",
+                        new String[]{"IMAGE"},
+                        "NAME = ?",
+                        new String[]{player.name},
+                        null, null, null);
+                if (imageCursor.moveToFirst()) {
+                    byte[] imageByteArray = imageCursor.getBlob(0);
+                    imageCursor.close();
+                    db.close();
+                    return BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
+                }
+                return null;
+            } catch (SQLiteException e) {
+                Log.e("ERR", "Error while getting bitmap image from database", e);
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (bitmap != null) {
+                // convert bitmap to drawable
+                Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+                // assign image and name to arrays (that will be later shown in Views)
+                playerImageDrawables[player.index] = drawable;
+                playerTemporaryNicknames[player.index] = player.name;
+            } else {
+                Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT)
                         .show();
             }
         }
