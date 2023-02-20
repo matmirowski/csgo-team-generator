@@ -1,12 +1,18 @@
 package pl.mateusz.csgoteamgenerator;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -31,7 +37,10 @@ import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class PlayerAddFragment extends Fragment {
     private EditText nickEditText;
@@ -43,7 +52,9 @@ public class PlayerAddFragment extends Fragment {
     private AppCompatCheckBox liquipediaSuccessCheckbox;
     private FloatingActionButton fab;
     private ImageView playerImageView;
+    private Bitmap playerImageBitmap;
     private Button uploadImageButton;
+    private Boolean photoSelected;
 
     private class CheckCorrectNicknameTask extends AsyncTask<String, Void, Boolean> {
         private String message = "";
@@ -121,6 +132,7 @@ public class PlayerAddFragment extends Fragment {
         liquipediaSwitch.setOnClickListener(e -> onLiquipediaSourceClick());
         liquipediaCheckButton.setOnClickListener(e -> onLiquipediaCheckClick());
         fab.setOnClickListener(e -> onAddPlayerClick());
+        uploadImageButton.setOnClickListener(e -> onUploadImageClick());
     }
 
     private void setupToolbar() {
@@ -187,6 +199,12 @@ public class PlayerAddFragment extends Fragment {
                     Toast.LENGTH_SHORT).show();
             return;
         }
+        if (!liquipediaSwitch.isChecked() && !defaultSwitch.isChecked() && !photoSelected) {
+            // if user didn't select any photo from gallery
+            Toast.makeText(getActivity(), "Please select a image first",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // get role
         int roleId = roleGroup.getCheckedRadioButtonId();
@@ -221,13 +239,60 @@ public class PlayerAddFragment extends Fragment {
             MyDatabaseHelper helper = new MyDatabaseHelper(getActivity());
             SQLiteDatabase db = helper.getWritableDatabase();
             helper.addRecord(db, name, role, imgSource);
+
+            // save player image if imagesource is custom
+            if (imgSource == ImageSource.CUSTOM) {
+                if (playerImageBitmap == null) {
+                    throw new IOException("Image bitmap is null");
+                }
+                byte[] imageAsByteArray = getBitmapAsByteArray(playerImageBitmap);
+                if (imageAsByteArray != null) {
+                    helper.addAvatar(db, name, imageAsByteArray);
+                }
+            }
             db.close();
             Toast.makeText(getActivity(), "Player added sucessfully", Toast.LENGTH_SHORT)
                     .show();
         } catch (SQLiteException e) {
             Log.e("ERR", "Error while putting player into database", e);
             Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT).show();
-            return;
+        } catch (IOException e) {
+            Log.e("ERR", "Error while putting player into database - null bitmap", e);
+            Toast.makeText(getActivity(), "Image unavailable", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void onUploadImageClick() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, 3);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 3 && data != null) {
+            try {
+                Uri selectedImage = data.getData();
+                InputStream imageStream = getActivity().getContentResolver().openInputStream(selectedImage);
+                Bitmap selectedBitmap = BitmapFactory.decodeStream(imageStream);
+                playerImageView.setImageBitmap(selectedBitmap);
+                playerImageBitmap = selectedBitmap;
+            } catch (FileNotFoundException e) {
+                Toast.makeText(getActivity(), "Image not found!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private static byte[] getBitmapAsByteArray(Bitmap bitmap) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
+            outputStream.close();
+            return outputStream.toByteArray();
+        } catch (IOException e) {
+            Log.e("ERR", "Can't convert bitmap to byte array", e);
+            return null;
         }
     }
 }

@@ -8,8 +8,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 3;
-    private static final String DB_NAME = "test2"; //TODO
+    private static final int DB_VERSION = 4;
+    private static final String DB_NAME = "test3"; //TODO
 
     public MyDatabaseHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -84,9 +84,16 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < 3) { // new column containing image source
             db.execSQL("ALTER TABLE PLAYERS ADD IMAGESRC TEXT NOT NULL DEFAULT 'LIQUIPEDIA'");
         }
+        if (oldVersion < 4) {
+            db.execSQL("CREATE TABLE AVATARS(" +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    "NAME TEXT," +
+                    "IMAGE BLOB)");
+        }
     }
 
     public void addRecord(SQLiteDatabase db, String name, Role role) {
+        // IMAGESRC column is default = "LIQUIPEDIA"
         ContentValues values = new ContentValues();
         values.put("NAME", name);
         values.put("ROLE", role.toString());
@@ -101,5 +108,13 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.insert("PLAYERS", null, values);
         Log.d("DATABASE", "Added player to database: " + name + " role: " +
                 role.toString() + " img: " + imgSrc.toString());
+    }
+
+    public void addAvatar(SQLiteDatabase db, String name, byte[] img) {
+        ContentValues values = new ContentValues();
+        values.put("NAME", name);
+        values.put("IMAGE", img);
+        db.insert("AVATARS", null, values);
+        Log.d("DATABASE", "Added image to database: " + name);
     }
 }
