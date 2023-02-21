@@ -57,31 +57,6 @@ public class GenerateFragment extends Fragment {
     private final Handler handler = new Handler();
 
     /**
-     * Represents basic information about the player, used in AsyncTasks to pass information
-     * about the player to another task.
-     */
-    private static class Player {
-        String name;
-        String url;
-        int index;
-        String imageSource;
-
-        /**
-         * Creates a player.
-         * @param name nickname of a player
-         * @param url url address of player's image (can be null)
-         * @param index index of location, where player should appear (0 - sniper, 1-3 - rifler,
-         *             4 - igl)
-         */
-        public Player(String name, String url, int index, String imageSource) {
-            this.name = name;
-            this.url = url;
-            this.index = index;
-            this.imageSource = imageSource;
-        }
-    }
-
-    /**
      * Asynchronous task used to get random player for each spot in generated team from database.
      * 3 cursors are used in background thread, one for each role.
      * There aren't any parameters for background thread. Array of strings is being passed to
@@ -155,8 +130,8 @@ public class GenerateFragment extends Fragment {
                         "LIQUIPEDIA"));
 
                 for (Player player : players) {
-                    Log.d("INFO", "Generated playername: " + player.name);
-                    if (!player.imageSource.equals(ImageSource.CUSTOM.toString()))
+                    Log.d("INFO", "Generated playername: " + player.getName());
+                    if (!player.getImageSource().equals(ImageSource.CUSTOM.toString()))
                         // image source is either LIQUIPEDIA or DEFAULT
                         new PlayerImageURLTask().execute(player);
                     else
@@ -189,9 +164,9 @@ public class GenerateFragment extends Fragment {
         protected String doInBackground(Player... params) {
             try {
                 player = params[0];
-                if (player.imageSource.equals(ImageSource.DEFAULT.toString()))
+                if (player.getImageSource().equals(ImageSource.DEFAULT.toString()))
                     return "https://i.imgur.com/KQDl2wD.png";
-                String playerProfileURL = liquipediaURL + player.name;
+                String playerProfileURL = liquipediaURL + player.getName();
 
                 // site scraping using Jsoup
                 Element doc = Jsoup
@@ -220,11 +195,11 @@ public class GenerateFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String imageURL) {
-            if (player.index == -1) // test case to avoid error while first attempt
+            if (player.getIndex() == -1) // test case to avoid error while first attempt
                 return;
             if (imageURL != null) {
-                Log.d("INFO", "Index URL: " + player.index);
-                player.url = imageURL;
+                Log.d("INFO", "Index URL: " + player.getIndex());
+                player.setUrl(imageURL);
                 new PlayerImageToDrawableTask().execute(player);
             } else {
                 Toast.makeText(getActivity(), "Unable to load images", Toast.LENGTH_SHORT)
@@ -249,9 +224,9 @@ public class GenerateFragment extends Fragment {
         @Override
         protected Drawable doInBackground(Player... params) {
             try {
-                String url = params[0].url;
-                index = params[0].index;
-                name = params[0].name;
+                String url = params[0].getUrl();
+                index = params[0].getIndex();
+                name = params[0].getName();
                 InputStream is = (InputStream) new URL(url).getContent();
                 return Drawable.createFromStream(is, "src name");
             } catch (Exception e) {
@@ -291,7 +266,7 @@ public class GenerateFragment extends Fragment {
                 Cursor imageCursor = db.query("AVATARS",
                         new String[]{"IMAGE"},
                         "NAME = ?",
-                        new String[]{player.name},
+                        new String[]{player.getName()},
                         null, null, null);
                 if (imageCursor.moveToFirst()) {
                     byte[] imageByteArray = imageCursor.getBlob(0);
@@ -312,8 +287,8 @@ public class GenerateFragment extends Fragment {
                 // convert bitmap to drawable
                 Drawable drawable = new BitmapDrawable(getResources(), bitmap);
                 // assign image and name to arrays (that will be later shown in Views)
-                playerImageDrawables[player.index] = drawable;
-                playerTemporaryNicknames[player.index] = player.name;
+                playerImageDrawables[player.getIndex()] = drawable;
+                playerTemporaryNicknames[player.getIndex()] = player.getName();
             } else {
                 Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT)
                         .show();
@@ -399,7 +374,7 @@ public class GenerateFragment extends Fragment {
             String tempName = cursor.getString(0);
             boolean isNameRepeated = false;
             for (Player player : results) {
-                if (player != null && tempName.equals(player.name)) {
+                if (player != null && tempName.equals(player.getName())) {
                     isNameRepeated = true;
                     break;
                 }
