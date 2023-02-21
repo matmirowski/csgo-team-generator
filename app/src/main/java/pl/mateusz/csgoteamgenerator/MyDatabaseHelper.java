@@ -64,7 +64,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             addPlayer(db, "Mynio", Role.IGL);
             addPlayer(db, "SNx", Role.IGL);
             addPlayer(db, "LunAtic", Role.IGL);
-            addPlayer(db, "Markoś", Role.Sniper);
             addPlayer(db, "M4tthi", Role.Sniper);
             addPlayer(db, "MASKED", Role.Sniper);
             addPlayer(db, "Layner", Role.Sniper);

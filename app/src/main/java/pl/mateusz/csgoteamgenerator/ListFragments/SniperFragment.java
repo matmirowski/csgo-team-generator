@@ -1,53 +1,41 @@
 package pl.mateusz.csgoteamgenerator.ListFragments;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-
-import java.io.IOException;
-
 import pl.mateusz.csgoteamgenerator.DatabaseHandler;
-import pl.mateusz.csgoteamgenerator.GenerateFragment;
-import pl.mateusz.csgoteamgenerator.MyDatabaseHelper;
+import pl.mateusz.csgoteamgenerator.Player;
 import pl.mateusz.csgoteamgenerator.R;
 import pl.mateusz.csgoteamgenerator.Role;
 
-public class SniperFragment extends AbstractRoleListFragment {
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        new SetupAdapterTask().execute(Role.Sniper);
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
+public class SniperFragment extends Fragment {
 
     @Override
-    public void onStart() {
-        getListView().setBackground(getResources().getDrawable(R.drawable.listback_sniper));
-        super.onStart();
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // get all players with specified role
+        Player[] players = DatabaseHandler.getPlayersFromDatabase(Role.Sniper, getActivity());
+
+        // if there is no players with such role, then we just inflate default layout //todo
+        if (players == null) {
+            Toast.makeText(getActivity(), "Can't access players from database", Toast.LENGTH_SHORT)
+                    .show();
+            return inflater.inflate(R.layout.fragment_player_list_role, container, false);
+        }
+        RecyclerView recycler = (RecyclerView) inflater.inflate(R.layout.fragment_player_list_role,
+                container, false);
+        PlayerListAdapter adapter = new PlayerListAdapter(players);
+        recycler.setAdapter(adapter);
+        recycler.setLayoutManager(new GridLayoutManager(getActivity(), 5));
+        recycler.setBackground(getResources().getDrawable(R.drawable.listback_sniper));
+        return recycler;
     }
 
 }

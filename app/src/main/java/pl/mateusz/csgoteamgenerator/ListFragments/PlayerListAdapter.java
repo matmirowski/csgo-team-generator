@@ -79,7 +79,6 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         return players.length;
     }
 
-    @Getter
     private static class TaskData {
         String name;
         ImageView imageView;

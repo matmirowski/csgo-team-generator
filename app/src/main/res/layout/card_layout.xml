@@ -24,6 +24,7 @@
             android:id="@+id/card_name"
             android:textColor="@color/text_gray"
             android:gravity="center"
+            android:fontFamily="@font/agency_fb"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center" />
