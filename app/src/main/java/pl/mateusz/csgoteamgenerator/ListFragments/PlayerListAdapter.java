@@ -36,7 +36,6 @@ import pl.mateusz.csgoteamgenerator.R;
 public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.ViewHolder> {
     private final Player[] players;
     private final Activity activity;
-    //TODO images
 
     public PlayerListAdapter(Player[] players, Activity activity) {
         this.players = players;
@@ -94,11 +93,11 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         }
     }
 
-    private class AssignUrlImageToPlayerImageTask extends AsyncTask<TaskData, Void, Drawable> {
+    private class AssignUrlImageToPlayerImageTask extends AsyncTask<TaskData, Void, String> {
         private ImageView imageView;
 
         @Override
-        protected Drawable doInBackground(TaskData... taskData) {
+        protected String doInBackground(TaskData... taskData) {
             try {
                 imageView = taskData[0].imageView;
                 String playerProfileURL = GenerateFragment.liquipediaURL + taskData[0].name;
@@ -125,11 +124,9 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
                     int endIndex = strMetaImg.length() - 2;
                     imageUrl = strMetaImg.substring(beginIndex, endIndex);
                 }
-                Log.d("IMAGEURL", imageUrl);
 
-                // get drawable from url
-                InputStream is = (InputStream) new URL(imageUrl).getContent();
-                return Drawable.createFromStream(is, "src name");
+                Log.d("IMAGEURL", imageUrl);
+                return imageUrl;
             } catch (IOException e) {
                 Log.e("EXC", "Error while getting image url from player profile", e);
                 return null;
@@ -137,9 +134,11 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         }
 
         @Override
-        protected void onPostExecute(Drawable image) {
-            if (image != null) {
-                imageView.setImageDrawable(image);
+        protected void onPostExecute(String imageUrl) {
+            if (imageUrl != null) {
+                Glide.with(activity)
+                        .load(imageUrl)
+                        .into(imageView);
             }
         }
     }
