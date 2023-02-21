@@ -1,5 +1,6 @@
 package pl.mateusz.csgoteamgenerator.ListFragments;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -17,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 
@@ -32,10 +35,12 @@ import pl.mateusz.csgoteamgenerator.R;
 
 public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.ViewHolder> {
     private final Player[] players;
+    private final Activity activity;
     //TODO images
 
-    public PlayerListAdapter(Player[] players) {
+    public PlayerListAdapter(Player[] players, Activity activity) {
         this.players = players;
+        this.activity = activity;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -70,7 +75,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
             imageView.setImageDrawable(cv.getResources().getDrawable(R.drawable.default_player2));
         }
         else {
-            new AssignCustomImageToPlayerImageTask().execute(new TaskData(player.getName(), imageView, cv));
+            new AssignCustomImageToPlayerImageTask().execute(new TaskData(player.getName(), imageView));
         }
     }
 
@@ -82,17 +87,10 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
     private static class TaskData {
         String name;
         ImageView imageView;
-        CardView cardView; // context
 
         public TaskData(String name, ImageView imageView) {
             this.name = name;
             this.imageView = imageView;
-        }
-
-        public TaskData(String name, ImageView imageView, CardView cardView) {
-            this.name = name;
-            this.imageView = imageView;
-            this.cardView = cardView;
         }
     }
 
@@ -153,8 +151,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         protected Drawable doInBackground(TaskData... taskData) {
             String name = taskData[0].name;
             imageView = taskData[0].imageView;
-            CardView contextView = taskData[0].cardView;
-            MyDatabaseHelper helper = new MyDatabaseHelper(contextView.getContext());
+            MyDatabaseHelper helper = new MyDatabaseHelper(activity);
             try {
                 SQLiteDatabase db = helper.getReadableDatabase();
                 Cursor cursor = db.query("AVATARS",

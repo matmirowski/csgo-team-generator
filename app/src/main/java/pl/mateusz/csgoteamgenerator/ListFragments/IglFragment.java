@@ -31,7 +31,7 @@ public class IglFragment extends Fragment {
         }
         RecyclerView recycler = (RecyclerView) inflater.inflate(R.layout.fragment_player_list_role,
                 container, false);
-        PlayerListAdapter adapter = new PlayerListAdapter(players);
+        PlayerListAdapter adapter = new PlayerListAdapter(players, getActivity());
         recycler.setAdapter(adapter);
         recycler.setLayoutManager(new GridLayoutManager(getActivity(), 5));
         recycler.setBackground(getResources().getDrawable(R.drawable.listback_igl));
