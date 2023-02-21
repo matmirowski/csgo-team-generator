@@ -17,11 +17,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/default_player"/>
+            android:src="@drawable/default_player2"/>
 
         <TextView
+            android:background="@color/half_transparent_black"
             android:id="@+id/card_name"
-            android:textColor="@color/sniper"
+            android:textColor="@color/text_gray"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center" />

@@ -1,7 +1,12 @@
 package pl.mateusz.csgoteamgenerator.ListFragments;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
@@ -21,7 +26,7 @@ import java.net.URL;
 
 import lombok.Getter;
 import pl.mateusz.csgoteamgenerator.GenerateFragment;
-import pl.mateusz.csgoteamgenerator.ImageSource;
+import pl.mateusz.csgoteamgenerator.MyDatabaseHelper;
 import pl.mateusz.csgoteamgenerator.Player;
 import pl.mateusz.csgoteamgenerator.R;
 
@@ -59,13 +64,13 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         text.setText(player.getName());
 
         if (player.getImageSource().equals("LIQUIPEDIA")) {
-            new AssignImageToPlayerImageTask().execute(new TaskData(players[i].getName(), imageView));
+            new AssignUrlImageToPlayerImageTask().execute(new TaskData(player.getName(), imageView));
         }
         else if (player.getImageSource().equals("DEFAULT")) {
-            imageView.setImageDrawable(cv.getResources().getDrawable(R.drawable.default_player));
+            imageView.setImageDrawable(cv.getResources().getDrawable(R.drawable.default_player2));
         }
         else {
-            // custom
+            new AssignCustomImageToPlayerImageTask().execute(new TaskData(player.getName(), imageView, cv));
         }
     }
 
@@ -78,14 +83,21 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
     private static class TaskData {
         String name;
         ImageView imageView;
+        CardView cardView; // context
 
         public TaskData(String name, ImageView imageView) {
             this.name = name;
             this.imageView = imageView;
         }
+
+        public TaskData(String name, ImageView imageView, CardView cardView) {
+            this.name = name;
+            this.imageView = imageView;
+            this.cardView = cardView;
+        }
     }
 
-    private class AssignImageToPlayerImageTask extends AsyncTask<TaskData, Void, Drawable> {
+    private class AssignUrlImageToPlayerImageTask extends AsyncTask<TaskData, Void, Drawable> {
         private ImageView imageView;
 
         @Override
@@ -131,6 +143,41 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         protected void onPostExecute(Drawable image) {
             if (image != null) {
                 imageView.setImageDrawable(image);
+            }
+        }
+    }
+
+    private class AssignCustomImageToPlayerImageTask extends AsyncTask<TaskData, Void, Drawable> {
+        private ImageView imageView;
+
+        @Override
+        protected Drawable doInBackground(TaskData... taskData) {
+            String name = taskData[0].name;
+            imageView = taskData[0].imageView;
+            CardView contextView = taskData[0].cardView;
+            MyDatabaseHelper helper = new MyDatabaseHelper(contextView.getContext());
+            try {
+                SQLiteDatabase db = helper.getReadableDatabase();
+                Cursor cursor = db.query("AVATARS",
+                        new String[]{"IMAGE"},
+                        "NAME = ?",
+                        new String[]{name},
+                        null, null, null);
+                if (!cursor.moveToFirst())
+                    return null;
+                byte[] imageByteArray = cursor.getBlob(0);
+                cursor.close();
+                db.close();
+                return new BitmapDrawable(BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length));
+            } catch (SQLiteException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Drawable drawable) {
+            if (drawable != null) {
+                imageView.setImageDrawable(drawable);
             }
         }
     }

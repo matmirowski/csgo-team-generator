@@ -19,4 +19,5 @@
     <color name="darker_gray">#121212</color>
     <color name="transparent">#ffffff00</color>
     <color name="text_gray_dark">#858585</color>
+    <color name="half_transparent_black">#B3000000</color>
 </resources>
