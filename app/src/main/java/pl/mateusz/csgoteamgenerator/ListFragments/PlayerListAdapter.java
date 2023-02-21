@@ -83,6 +83,18 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         return players.length;
     }
 
+    // Implementation of these two methods: getItemViewType and getItemId fixes bug with recycler
+    // displaying wrong images with slight performance loss
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
     private static class TaskData {
         String name;
         ImageView imageView;
