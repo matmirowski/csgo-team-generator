@@ -88,16 +88,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            transaction.setReorderingAllowed(true); // TODO ???
+            transaction.setReorderingAllowed(true);
             transaction.addToBackStack(null);
             transaction.commit();
             DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
-        } else {
-            // TODO
-            return false;
         }
+        return false;
     }
 
     @Override

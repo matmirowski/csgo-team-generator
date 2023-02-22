@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 4;
-    private static final String DB_NAME = "test8"; //TODO
+    private static final String DB_NAME = "test8"; //todo change db name
 
     public MyDatabaseHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);

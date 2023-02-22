@@ -177,7 +177,6 @@ public class PlayerListFragment extends Fragment {
                 listToolbar,
                 R.string.nav_open_drawer,
                 R.string.nav_close_drawer) {
-            //TODO try to decrease delay
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);

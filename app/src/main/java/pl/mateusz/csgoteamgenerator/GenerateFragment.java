@@ -46,8 +46,6 @@ import java.net.URL;
 import java.util.Random;
 
 public class GenerateFragment extends Fragment {
-    //TODO round button corners?
-    //TODO shorter animation?
     private final ImageView[] playerImageViews = new ImageView[5];
     private final TextView[] playerTextViews = new TextView[5];
     private final Drawable[] playerImageDrawables = new Drawable[5];

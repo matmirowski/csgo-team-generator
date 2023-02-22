@@ -271,7 +271,7 @@ public class PlayerAddFragment extends Fragment {
             imgSource = ImageSource.CUSTOM;
 
         // add record
-        try { //TODO async
+        try {
             MyDatabaseHelper helper = new MyDatabaseHelper(getActivity());
             SQLiteDatabase db = helper.getWritableDatabase();
             helper.addPlayer(db, name, role, imgSource);
