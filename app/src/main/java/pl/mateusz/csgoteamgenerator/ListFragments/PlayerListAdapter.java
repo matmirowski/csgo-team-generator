@@ -128,6 +128,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
                 Log.d("INFO", "player meta: " + strMetaImg);
                 int beginIndex = strMetaImg.indexOf("https");
 
+
                 // if there is no player photo on liquipedia, default hltv photo is being used
                 String imageUrl;
                 if (beginIndex == -1)

@@ -3,10 +3,12 @@ package pl.mateusz.csgoteamgenerator;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -87,6 +89,10 @@ public class PlayerListFragment extends Fragment {
         ViewPager pager = getActivity().findViewById(R.id.pager);
         pager.setAdapter(adapter);
 
+        // set fab onClickListener
+        FloatingActionButton fab = getActivity().findViewById(R.id.fab_player_list);
+        fab.setOnClickListener(e -> onClickAddPlayer());
+
         // setup tablayout
         TabLayout tabLayout = getActivity().findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(pager);
@@ -162,6 +168,14 @@ public class PlayerListFragment extends Fragment {
         super.onStop();
         ((AppCompatActivity)getActivity()).getSupportActionBar().show();
         currentFragmentVisible = false;
+    }
+
+    private void onClickAddPlayer() {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.replace(R.id.fragment_container, new PlayerAddFragment());
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
 }

@@ -44,6 +44,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+//todo after onClick fab in playerlist check role checkbox
 public class PlayerAddFragment extends Fragment {
     private EditText nickEditText;
     private RadioGroup roleGroup;
@@ -282,7 +283,7 @@ public class PlayerAddFragment extends Fragment {
                 }
             }
 
-            // move to GenerateFragment and display Snackbar
+            // display Snackbar
             String snackbarText = "Player added successfully";
             Snackbar addPlayerSnackbar = Snackbar.make(getActivity().findViewById(R.id.drawer_layout),
                     snackbarText, Snackbar.LENGTH_LONG);
@@ -300,7 +301,7 @@ public class PlayerAddFragment extends Fragment {
             });
             addPlayerSnackbar.show();
 
-            // replace current Fragment to PlayerListFragment //TODO maybe to generatefragment?
+            // move to PlayerListFragment
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.fragment_container, new PlayerListFragment());
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);

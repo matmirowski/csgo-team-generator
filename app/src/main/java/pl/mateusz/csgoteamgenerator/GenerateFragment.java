@@ -329,7 +329,7 @@ public class GenerateFragment extends Fragment {
     }
 
     /**
-     * Invoked while generateButton was clicked
+     * Invoked when generateButton was clicked
      */
     private void onClickGenerate() {
         wasGenerated = true;
