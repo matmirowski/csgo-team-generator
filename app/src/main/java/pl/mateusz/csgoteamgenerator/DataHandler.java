@@ -19,12 +19,12 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
+import java.util.Random;
 
 public class DataHandler {
     public static final String liquipediaURL = "https://liquipedia.net/counterstrike/";
 
-    public static Player[] getPlayersFromDatabase(Role role, Context context) { //todo returns null if no player with role
-
+    public static Player[] getPlayersFromDatabase(Role role, Context context) {
         SQLiteOpenHelper helper = new MyDatabaseHelper(context);
         try {
             SQLiteDatabase db = helper.getReadableDatabase();
@@ -74,17 +74,20 @@ public class DataHandler {
 
     public static Element getSiteHtmlHead(String playerProfileUrl) {
         try {
-            Proxy proxy = new Proxy(Proxy.Type.HTTP,
-                    new InetSocketAddress("127.0.0.1", 1080));
-
+            // get random number to have different user-agent header each connection
+            Random random = new Random();
+            int randomVersion = random.nextInt(1000);
+            int randomVersionAfterDot = random.nextInt(100);
+            int randomTimeout = random.nextInt(100) + 1000;
+            String userAgentHead = "Safari/5.0 (Macintosh; Intel Mac OS X 10_11_1) " +
+                    "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                    "Chrome/46.0.2454.101 Safari/" + randomVersion + "." + randomVersionAfterDot;
             return Jsoup
                     .connect(playerProfileUrl)
-                    .proxy(proxy)
-                    .timeout(1000)
-                    .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) " +
-                            "AppleWebKit/537.36 (KHTML, like Gecko) " +
-                            "Chrome/45.0.2454.101 Safari/537.36")
-                    .get().head();
+                    .timeout(randomTimeout)
+                    .userAgent(userAgentHead)
+                    .get()
+                    .head();
         } catch (IOException e) {
             Log.e("EXC", "Error while getting image url from player profile", e);
             return null;

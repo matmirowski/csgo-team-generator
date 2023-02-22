@@ -2,6 +2,7 @@ package pl.mateusz.csgoteamgenerator;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
@@ -146,7 +147,11 @@ public class PlayerAddFragment extends Fragment {
             ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
         }
         Toolbar toolbar = getActivity().findViewById(R.id.add_player_toolbar);
-        toolbar.setTitle("Add new wholesome player");
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE)
+            toolbar.setTitle("Add new wholesome player");
+        else
+            toolbar.setTitle("Add new player");
         toolbar.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 

@@ -117,7 +117,9 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
 
         @Override
         protected void onPostExecute(String imageUrl) {
-            if (imageUrl != null) {
+            if (imageUrl != null && !imageUrl.equals("https://i.imgur.com/KQDl2wD.png")) {
+                // url is not null and url isn't default player url
+                Log.d("LIST-IMAGEURL", imageUrl);
                 Glide.with(activity)
                         .load(imageUrl)
                         .into(imageView);

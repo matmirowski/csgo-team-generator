@@ -1,6 +1,7 @@
 package pl.mateusz.csgoteamgenerator;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -362,7 +363,11 @@ public class GenerateFragment extends Fragment {
             ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
         }
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setTitle("Save Polish CS with your generated roster!");
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE)
+            toolbar.setTitle("Save Polish CS with your generated roster!");
+        else
+            toolbar.setTitle("Generate your team!");
         toolbar.setBackgroundColor(getResources().getColor(R.color.appbar_color));
         toolbar.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
