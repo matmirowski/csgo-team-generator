@@ -28,9 +28,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Fragment generateFragment = new GenerateFragment();
+        Fragment contentFragment = new GenerateFragment();
+
+        if (savedInstanceState != null) {
+            String savedFragmentName = savedInstanceState.getString("saved_fragment_name");
+            if (savedFragmentName.equals("PlayerListFragment"))
+                contentFragment = new PlayerListFragment();
+            else if (savedFragmentName.equals("PlayerAddFragment"))
+                contentFragment = new PlayerAddFragment();
+        }
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.fragment_container, generateFragment);
+        transaction.add(R.id.fragment_container, contentFragment);
         transaction.commit();
     }
 
@@ -89,5 +98,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // TODO
             return false;
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle saveState) {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        String currentFragment;
+        if (fragment instanceof GenerateFragment)
+            currentFragment = "GenerateFragment";
+        else if (fragment instanceof  PlayerListFragment)
+            currentFragment = "PlayerListFragment";
+        else
+            currentFragment = "PlayerAddFragment";
+        saveState.putString("saved_fragment_name", currentFragment);
+        super.onSaveInstanceState(saveState);
     }
 }

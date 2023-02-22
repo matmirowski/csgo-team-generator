@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -109,8 +111,12 @@ public class PlayerAddFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            FragmentTransaction ft2 = getFragmentManager().beginTransaction();
+            ft2.replace(R.id.fragment_container, new PlayerAddFragment());
+            ft2.commit();
+        }
 
         // assign views to variables
         nickEditText = getActivity().findViewById(R.id.add_player_nick_text);
@@ -140,6 +146,7 @@ public class PlayerAddFragment extends Fragment {
 
         // test case to avoid Jsoup errors
         new CheckCorrectNicknameTask().execute("ILLa");
+        super.onActivityCreated(savedInstanceState);
     }
 
     private void setupToolbar() {
@@ -153,6 +160,7 @@ public class PlayerAddFragment extends Fragment {
         else
             toolbar.setTitle("Add new player");
         toolbar.setTitleTextColor(Color.WHITE);
+
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
@@ -348,5 +356,11 @@ public class PlayerAddFragment extends Fragment {
             Log.e("ERR", "Can't convert bitmap to byte array", e);
             return null;
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean("restarting", true);
+        super.onSaveInstanceState(outState);
     }
 }

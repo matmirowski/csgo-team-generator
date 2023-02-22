@@ -2,6 +2,7 @@ package pl.mateusz.csgoteamgenerator;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -75,8 +76,13 @@ public class PlayerListFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            FragmentTransaction ft2 = getFragmentManager().beginTransaction();
+            ft2.replace(R.id.fragment_container, new PlayerListFragment());
+            ft2.commit();
+        }
+
         Log.e("INFO", "STARTING PAGER");
         currentFragmentVisible = true;
 
@@ -99,36 +105,7 @@ public class PlayerListFragment extends Fragment {
         tabLayout.setupWithViewPager(pager);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.sniper));
 
-        // hide default toolbar and set new with drawerlayout setup
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-        Toolbar listToolbar = getActivity().findViewById(R.id.player_list_toolbar);
-        listToolbar.setBackgroundColor(getResources().getColor(R.color.dark_gray));
-        listToolbar.setTitle("List of best Polish players");
-        ((AppCompatActivity) getActivity()).setSupportActionBar(listToolbar);
-        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                getActivity(),
-                drawerLayout,
-                listToolbar,
-                R.string.nav_open_drawer,
-                R.string.nav_close_drawer) {
-            //TODO try to decrease delay
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                if (currentFragmentVisible)
-                    getActivity().getWindow().setNavigationBarColor(Color.BLACK);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                if (currentFragmentVisible)
-                    getActivity().getWindow().setNavigationBarColor(currentColor);
-            }
-        };
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        setupLayout();
 
         // set pager onPageChangeListener to change theme depending on current ViewPager page
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -162,6 +139,7 @@ public class PlayerListFragment extends Fragment {
                 }
             }
         });
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -181,6 +159,47 @@ public class PlayerListFragment extends Fragment {
         // select item in drawer
         NavigationView navView = getActivity().findViewById(R.id.nav_view);
         navView.setCheckedItem(R.id.nav_add_player);
+    }
+
+    private void setupLayout() {
+        // hide default toolbar and set new with drawerlayout setup
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+        }
+        Toolbar listToolbar = getActivity().findViewById(R.id.player_list_toolbar);
+        listToolbar.setBackgroundColor(getResources().getColor(R.color.dark_gray));
+        listToolbar.setTitle("List of best Polish players");
+        ((AppCompatActivity) getActivity()).setSupportActionBar(listToolbar);
+        DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                getActivity(),
+                drawerLayout,
+                listToolbar,
+                R.string.nav_open_drawer,
+                R.string.nav_close_drawer) {
+            //TODO try to decrease delay
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                if (currentFragmentVisible)
+                    getActivity().getWindow().setNavigationBarColor(Color.BLACK);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                if (currentFragmentVisible)
+                    getActivity().getWindow().setNavigationBarColor(currentColor);
+            }
+        };
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean("restarting", true);
+        super.onSaveInstanceState(outState);
     }
 
 }

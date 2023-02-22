@@ -14,8 +14,11 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -45,7 +48,6 @@ import java.util.Random;
 public class GenerateFragment extends Fragment {
     //TODO round button corners?
     //TODO shorter animation?
-    //TODO vertical layout?
     private final ImageView[] playerImageViews = new ImageView[5];
     private final TextView[] playerTextViews = new TextView[5];
     private final Drawable[] playerImageDrawables = new Drawable[5];
@@ -251,6 +253,7 @@ public class GenerateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setRetainInstance(true);
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_generate, container, false);
     }
@@ -263,8 +266,13 @@ public class GenerateFragment extends Fragment {
      * - Load button animation through Glide library
      */
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            FragmentTransaction ft2 = getFragmentManager().beginTransaction();
+            ft2.replace(R.id.fragment_container, new GenerateFragment());
+            ft2.commit();
+        }
+
         ImageView generateButton = getActivity().findViewById(R.id.button_generate);
         generateButton.setOnClickListener(e -> onClickGenerate());
 
@@ -277,6 +285,7 @@ public class GenerateFragment extends Fragment {
 
         //load animation of the generateButton
         onClickDrawable = Glide.with(getActivity()).load("https://i.imgur.com/SoP7eUI.gif");
+        super.onActivityCreated(savedInstanceState);
     }
 
     /**
@@ -298,14 +307,19 @@ public class GenerateFragment extends Fragment {
         public void run() {
             generating = false;
             // change generateButton gif to static image
-            ImageView generateButton = getActivity().findViewById(R.id.button_generate);
-            generateButton.setImageResource(R.drawable.generate_static);
+            try {
+                ImageView generateButton = getActivity().findViewById(R.id.button_generate);
+                generateButton.setImageResource(R.drawable.generate_static);
 
-            // change player textviews and imageviews
-            for (int i = 0; i < 5; i++) {
-                playerTextViews[i].setText(playerTemporaryNicknames[i]);
-                playerImageViews[i].setImageDrawable(playerImageDrawables[i]);
+                // change player textviews and imageviews
+                for (int i = 0; i < 5; i++) {
+                    playerTextViews[i].setText(playerTemporaryNicknames[i]);
+                    playerImageViews[i].setImageDrawable(playerImageDrawables[i]);
+                }
+            } catch (NullPointerException e) {
+                Log.e("ERR", "Activity doesn't exist - can't display player images", e);
             }
+
         }
     };
 
@@ -420,5 +434,11 @@ public class GenerateFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean("restarting", true);
+        super.onSaveInstanceState(outState);
     }
 }
