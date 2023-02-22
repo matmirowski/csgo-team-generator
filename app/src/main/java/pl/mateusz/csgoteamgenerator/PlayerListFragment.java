@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -176,6 +177,10 @@ public class PlayerListFragment extends Fragment {
         ft.replace(R.id.fragment_container, new PlayerAddFragment());
         ft.addToBackStack(null);
         ft.commit();
+
+        // select item in drawer
+        NavigationView navView = getActivity().findViewById(R.id.nav_view);
+        navView.setCheckedItem(R.id.nav_add_player);
     }
 
 }
