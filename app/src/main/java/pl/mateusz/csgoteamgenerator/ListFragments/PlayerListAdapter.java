@@ -117,7 +117,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
 
         @Override
         protected void onPostExecute(String imageUrl) {
-            if (imageUrl != null && !imageUrl.equals("https://i.imgur.com/KQDl2wD.png")) {
+            if (imageUrl != null && !imageUrl.equals("https://i.imgur.com/KQDl2wD.png") && !activity.isDestroyed()) {
                 // url is not null and url isn't default player url
                 Log.d("LIST-IMAGEURL", imageUrl);
                 Glide.with(activity)
@@ -155,7 +155,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
 
         @Override
         protected void onPostExecute(Drawable drawable) {
-            if (drawable != null) {
+            if (drawable != null && !activity.isDestroyed()) {
                 imageView.setImageDrawable(drawable);
             }
         }
