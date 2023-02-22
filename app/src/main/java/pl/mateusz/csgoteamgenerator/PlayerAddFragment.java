@@ -113,6 +113,11 @@ public class PlayerAddFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
+            // set initial toolbar same as in GenerateFragment to avoid bug with empty toolbar
+            Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+            // reloading fragment after configuration change
             FragmentTransaction ft2 = getFragmentManager().beginTransaction();
             ft2.replace(R.id.fragment_container, new PlayerAddFragment());
             ft2.commit();
@@ -163,6 +168,7 @@ public class PlayerAddFragment extends Fragment {
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
 
+        // setup drawer and assign to toolbar
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 getActivity(),
@@ -173,6 +179,7 @@ public class PlayerAddFragment extends Fragment {
         toggle.getDrawerArrowDrawable().setColor(Color.WHITE);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 

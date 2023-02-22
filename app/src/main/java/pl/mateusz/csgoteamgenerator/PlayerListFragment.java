@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -78,12 +79,16 @@ public class PlayerListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
+            // set initial toolbar same as in GenerateFragment to avoid bug with empty toolbar
+            Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+            // reloading fragment after configuration change
             FragmentTransaction ft2 = getFragmentManager().beginTransaction();
             ft2.replace(R.id.fragment_container, new PlayerListFragment());
             ft2.commit();
         }
 
-        Log.e("INFO", "STARTING PAGER");
         currentFragmentVisible = true;
 
         // set theme
@@ -169,7 +174,10 @@ public class PlayerListFragment extends Fragment {
         Toolbar listToolbar = getActivity().findViewById(R.id.player_list_toolbar);
         listToolbar.setBackgroundColor(getResources().getColor(R.color.dark_gray));
         listToolbar.setTitle("List of best Polish players");
+
         ((AppCompatActivity) getActivity()).setSupportActionBar(listToolbar);
+
+        // setup drawer and assign to toolbar
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 getActivity(),
@@ -193,6 +201,8 @@ public class PlayerListFragment extends Fragment {
         };
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 
     @Override
