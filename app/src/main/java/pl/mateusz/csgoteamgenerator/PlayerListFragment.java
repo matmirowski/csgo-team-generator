@@ -1,5 +1,6 @@
 package pl.mateusz.csgoteamgenerator;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,6 +30,7 @@ import pl.mateusz.csgoteamgenerator.ListFragments.SniperFragment;
 public class PlayerListFragment extends Fragment {
     private int currentColor;
     private boolean currentFragmentVisible;
+    private Activity activity;
 
     private class RolePagerAdapter extends FragmentStatePagerAdapter {
 
@@ -90,23 +92,24 @@ public class PlayerListFragment extends Fragment {
         }
 
         currentFragmentVisible = true;
+        activity = getActivity();
 
         // set theme
-        getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.sniper));
-        getActivity().getWindow().setStatusBarColor(Color.BLACK);
+        activity.getWindow().setNavigationBarColor(getResources().getColor(R.color.sniper));
+        activity.getWindow().setStatusBarColor(Color.BLACK);
         currentColor = getResources().getColor(R.color.sniper);
 
         // setup viewpager
         RolePagerAdapter adapter = new RolePagerAdapter(getActivity().getSupportFragmentManager());
-        ViewPager pager = getActivity().findViewById(R.id.pager);
+        ViewPager pager = activity.findViewById(R.id.pager);
         pager.setAdapter(adapter);
 
         // set fab onClickListener
-        FloatingActionButton fab = getActivity().findViewById(R.id.fab_player_list);
+        FloatingActionButton fab = activity.findViewById(R.id.fab_player_list);
         fab.setOnClickListener(e -> onClickAddPlayer());
 
         // setup tablayout
-        TabLayout tabLayout = getActivity().findViewById(R.id.tabs);
+        TabLayout tabLayout = activity.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(pager);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.sniper));
 
@@ -189,14 +192,14 @@ public class PlayerListFragment extends Fragment {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 if (currentFragmentVisible)
-                    getActivity().getWindow().setNavigationBarColor(Color.BLACK);
+                    activity.getWindow().setNavigationBarColor(Color.BLACK);
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                if (currentFragmentVisible)
-                    getActivity().getWindow().setNavigationBarColor(currentColor);
+                if (currentFragmentVisible && activity.findViewById(R.id.fab_player_list) != null)
+                    activity.getWindow().setNavigationBarColor(currentColor);
             }
         };
         drawerLayout.addDrawerListener(toggle);

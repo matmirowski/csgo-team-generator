@@ -61,7 +61,7 @@
 
             <EditText
                 android:id="@+id/add_player_nick_text"
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="40dp"
                 android:background="@drawable/custom_input"
                 android:drawablePadding="10dp"
@@ -81,11 +81,10 @@
 
             <RadioGroup
                 android:id="@+id/role_group"
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/custom_input"
-                android:paddingEnd="170dp">
+                android:background="@drawable/custom_input">
 
                 <RadioButton
                     android:id="@+id/sniper_radio"
