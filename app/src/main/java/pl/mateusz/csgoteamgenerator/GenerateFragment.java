@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -19,7 +18,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +26,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +45,6 @@ public class GenerateFragment extends Fragment {
     //TODO round button corners?
     //TODO shorter animation?
     //TODO vertical layout?
-    public static final String liquipediaURL = "https://liquipedia.net/counterstrike/";
     private final ImageView[] playerImageViews = new ImageView[5];
     private final TextView[] playerTextViews = new TextView[5];
     private final Drawable[] playerImageDrawables = new Drawable[5];
@@ -73,54 +69,29 @@ public class GenerateFragment extends Fragment {
          */
         @Override
         protected Player[] doInBackground(Void... voids) {
-            MyDatabaseHelper dbHelper = new MyDatabaseHelper(getActivity());
-            try {
-                SQLiteDatabase db = dbHelper.getReadableDatabase();
-                // cursors containing all players with specific role
-                Cursor iglCursor = db.query("PLAYERS",
-                        new String[]{"NAME", "IMAGESRC"},
-                        "ROLE = ?",
-                        new String[] {"IGL"},
-                        null, null, null);
-                Cursor riflerCursor = db.query("PLAYERS",
-                        new String[]{"NAME", "IMAGESRC"},
-                        "ROLE = ?",
-                        new String[] {"Rifler"},
-                        null, null, null);
-                Cursor sniperCursor = db.query("PLAYERS",
-                        new String[]{"NAME", "IMAGESRC"},
-                        "ROLE = ?",
-                        new String[] {"Sniper"},
-                        null, null, null);
-                Random rand = new Random();
+            Player[] allSnipers = DataHandler
+                    .getPlayersFromDatabase(Role.Sniper, getActivity());
+            Player[] allRiflers = DataHandler
+                    .getPlayersFromDatabase(Role.Rifler, getActivity());
+            Player[] allIgls = DataHandler
+                    .getPlayersFromDatabase(Role.IGL, getActivity());
 
-                // move cursors to random player from query
-                iglCursor.moveToFirst();
-                iglCursor.move(rand.nextInt(iglCursor.getCount()));
-                sniperCursor.moveToFirst();
-                sniperCursor.move(rand.nextInt(sniperCursor.getCount()));
-
-                // create sniper and igl Player instances and put them in an array
-                Player sniper = new Player(sniperCursor.getString(0), null, 0,
-                        sniperCursor.getString(1));
-                Player igl = new Player(iglCursor.getString(0), null, 4,
-                        iglCursor.getString(1));
-                Player[] results = new Player[5];
-                results[0] = sniper;
-                results[4] = igl;
-
-                // we use method that gets random 3 riflers from cursor and puts them in an array
-                // with igl and sniper (riflers are in indexes 1-3)
-                Player[] finalResults = getRandomRiflersFromCursor(riflerCursor, results);
-                iglCursor.close();
-                sniperCursor.close();
-                riflerCursor.close();
-                db.close();
-                return finalResults;
-            } catch (SQLiteException e) {
-                Log.e("ERR", "Error while getting names from database", e);
+            if (allSnipers == null || allRiflers == null || allIgls == null) {
+                Log.e("ERR", "No players found with one of the roles");
                 return null;
             }
+
+            // get random sniper and igl from arrays and put them in results array
+            Random rand = new Random();
+            Player[] results = new Player[5];
+            results[0] = allSnipers[rand.nextInt(allSnipers.length)];
+            results[0].setIndex(0);
+            results[4] = allIgls[rand.nextInt(allIgls.length)];
+            results[4].setIndex(4);
+
+            // we use method that gets random 3 riflers from cursor and puts them in an array
+            // with igl and sniper (riflers are in indexes 1-3)
+            return getRandomRiflersFromCursor(allRiflers, results);
         }
 
         @Override
@@ -164,41 +135,19 @@ public class GenerateFragment extends Fragment {
          */
         @Override
         protected String doInBackground(Player... params) {
-            try {
-                player = params[0];
-                if (player.getImageSource().equals(ImageSource.DEFAULT.toString()))
-                    return "https://i.imgur.com/KQDl2wD.png";
-                String playerProfileURL = liquipediaURL + player.getName();
-
-                // site scraping using Jsoup
-                Element doc = Jsoup
-                        .connect(playerProfileURL)
-                        .timeout(1000)
-                        .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) " +
-                                "AppleWebKit/537.36 (KHTML, like Gecko) " +
-                                "Chrome/45.0.2454.101 Safari/537.36")
-                        .get().head();
-
-                // get only element with image url (index 12 of meta tags)
-                String strMetaImg = doc.getElementsByTag("meta").get(12).toString();
-                Log.d("INFO", "player meta: " + strMetaImg);
-                int beginIndex = strMetaImg.indexOf("https");
-
-                // if there is no player photo on liquipedia, default hltv photo is being used
-                if (beginIndex == -1)
-                    return "https://i.imgur.com/KQDl2wD.png";
-                int endIndex = strMetaImg.length() - 2;
-                return strMetaImg.substring(beginIndex, endIndex);
-            } catch (IOException e) {
-                Log.e("EXC", "Error while getting image url from player profile", e);
-                return null;
-            }
+            player = params[0];
+            if (player.getImageSource().equals(ImageSource.DEFAULT.toString()))
+                return "https://i.imgur.com/KQDl2wD.png";
+            return DataHandler.getPlayerImageUrl(player.getName());
         }
 
         @Override
         protected void onPostExecute(String imageURL) {
-            if (player.getIndex() == -1) // test case to avoid error while first attempt
+
+            // test case to avoid error while first attempt
+            if (player.getIndex() == -1)
                 return;
+
             if (imageURL != null) {
                 Log.d("INFO", "Index URL: " + player.getIndex());
                 player.setUrl(imageURL);
@@ -362,27 +311,26 @@ public class GenerateFragment extends Fragment {
     /**
      * Gets 3 random records from cursor containing all riflers.
      * Also checks if these records are individual (not repeated)
-     * @param cursor cursor containing all riflers from database
+     * @param allRiflers array containing all riflers from database
      * @param results string array containing sniper on index 0 and igl on index 4
      * @return string array filled with all randomized players
      */
-    private Player[] getRandomRiflersFromCursor(Cursor cursor, Player[] results) {
+    private Player[] getRandomRiflersFromCursor(Player[] allRiflers, Player[] results) {
         Random rand = new Random();
         int correctPlayers = 0;
         int index = 1;
         while (correctPlayers < 3) {
-            cursor.moveToFirst();
-            cursor.move(rand.nextInt(cursor.getCount()));
-            String tempName = cursor.getString(0);
+            Player tempPlayer = allRiflers[rand.nextInt(allRiflers.length)];
             boolean isNameRepeated = false;
             for (Player player : results) {
-                if (player != null && tempName.equals(player.getName())) {
+                if (player != null && tempPlayer.getName().equals(player.getName())) {
                     isNameRepeated = true;
                     break;
                 }
             }
             if (!isNameRepeated) {
-                results[index] = new Player(tempName, null, index, cursor.getString(1));
+                tempPlayer.setIndex(index);
+                results[index] = tempPlayer;
                 correctPlayers++;
                 index++;
             }

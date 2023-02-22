@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import lombok.Getter;
+import pl.mateusz.csgoteamgenerator.DataHandler;
 import pl.mateusz.csgoteamgenerator.GenerateFragment;
 import pl.mateusz.csgoteamgenerator.MyDatabaseHelper;
 import pl.mateusz.csgoteamgenerator.Player;
@@ -110,40 +111,8 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
 
         @Override
         protected String doInBackground(TaskData... taskData) {
-            try {
-                imageView = taskData[0].imageView;
-                String playerProfileURL = GenerateFragment.liquipediaURL + taskData[0].name;
-
-                // site scraping using Jsoup
-                Element doc = Jsoup
-                        .connect(playerProfileURL)
-                        .timeout(1000)
-                        .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) " +
-                                "AppleWebKit/537.36 (KHTML, like Gecko) " +
-                                "Chrome/45.0.2454.101 Safari/537.36")
-                        .get().head();
-
-                // get only element with image url (index 12 of meta tags)
-                String strMetaImg = doc.getElementsByTag("meta").get(12).toString();
-                Log.d("INFO", "player meta: " + strMetaImg);
-                int beginIndex = strMetaImg.indexOf("https");
-
-
-                // if there is no player photo on liquipedia, default hltv photo is being used
-                String imageUrl;
-                if (beginIndex == -1)
-                    return null;
-                else {
-                    int endIndex = strMetaImg.length() - 2;
-                    imageUrl = strMetaImg.substring(beginIndex, endIndex);
-                }
-
-                Log.d("IMAGEURL", imageUrl);
-                return imageUrl;
-            } catch (IOException e) {
-                Log.e("EXC", "Error while getting image url from player profile", e);
-                return null;
-            }
+            imageView = taskData[0].imageView;
+            return DataHandler.getPlayerImageUrl(taskData[0].name);
         }
 
         @Override

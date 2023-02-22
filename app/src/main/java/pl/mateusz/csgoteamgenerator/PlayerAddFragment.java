@@ -66,33 +66,24 @@ public class PlayerAddFragment extends Fragment {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            try {
-                name = params[0];
-                String playerProfileURL = GenerateFragment.liquipediaURL + name;
-                // site scraping using Jsoup
-                Element doc = Jsoup
-                        .connect(playerProfileURL)
-                        .timeout(1000)
-                        .userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) " +
-                                "AppleWebKit/537.36 (KHTML, like Gecko) " +
-                                "Chrome/45.0.2454.101 Safari/537.36")
-                        .get().head();
-                String scriptTag = doc.getElementsByTag("script").get(0).toString();
-                if (scriptTag.contains("Disambiguation pages")) {
-                    message = "Invalid nickname: Too many players under this URL!";
-                    Log.e("CHECK", message);
-                    return false;
-                }
-                message = "Nickname is correct!";
-                return true;
-            } catch (HttpStatusException e) {
-                message = "Invalid nickname: There is no such player!";
-                Log.e("CHECK", message, e);
-                return false;
-            } catch (IOException e) {
-                message = "Liquipedia site unavailable! Please try again";
+            name = params[0];
+            String playerProfileUrl = DataHandler.liquipediaURL + name;
+
+            // site scraping using Jsoup
+            Element doc = DataHandler.getSiteHtmlHead(playerProfileUrl);
+            if (doc == null) {
+                message = "Invalid nickname: Player not found";
                 return false;
             }
+
+            String scriptTag = doc.getElementsByTag("script").get(0).toString();
+            if (scriptTag.contains("Disambiguation pages")) {
+                message = "Invalid nickname: Too many players under this URL!";
+                Log.e("CHECK", message);
+                return false;
+            }
+            message = "Nickname is correct!";
+            return true;
         }
 
         @Override

@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import pl.mateusz.csgoteamgenerator.DatabaseHandler;
+import pl.mateusz.csgoteamgenerator.DataHandler;
 import pl.mateusz.csgoteamgenerator.Player;
 import pl.mateusz.csgoteamgenerator.R;
 import pl.mateusz.csgoteamgenerator.Role;
@@ -21,7 +21,7 @@ public class SniperFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // get all players with specified role
-        Player[] players = DatabaseHandler.getPlayersFromDatabase(Role.Sniper, getActivity());
+        Player[] players = DataHandler.getPlayersFromDatabase(Role.Sniper, getActivity());
 
         // if there is no players with such role, then we just inflate default layout //todo
         if (players == null) {
