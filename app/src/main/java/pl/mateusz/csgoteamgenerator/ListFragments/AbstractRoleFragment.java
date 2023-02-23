@@ -61,13 +61,11 @@ public abstract class AbstractRoleFragment extends Fragment {
         }
         recycler.setBackground(backgroundDrawable);
 
-        // if there is no players with such role, then we just inflate default layout //todo
         if (players == null) {
             Toast.makeText(getActivity(), "Can't access players from database", Toast.LENGTH_SHORT)
                     .show();
             return inflater.inflate(R.layout.fragment_player_list_role, container, false);
         }
-
         return recycler;
     }
 

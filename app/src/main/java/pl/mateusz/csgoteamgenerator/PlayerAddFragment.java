@@ -43,7 +43,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-//todo after onClick fab in playerlist check role checkbox
 public class PlayerAddFragment extends Fragment {
     // Views used in fragment's methods
     private EditText nickEditText;
