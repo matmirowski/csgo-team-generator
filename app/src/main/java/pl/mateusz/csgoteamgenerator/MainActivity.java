@@ -19,15 +19,21 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
+    /** Initial activity configuration and loading fragment with main content */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // set default theme
         getApplication().setTheme(R.style.Theme_CSGOTeamGenerator);
         setContentView(R.layout.activity_main);
 
+        // assign listener to navView
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // perform FragmentTransaction to one of fragments, depends on which was selected before
+        // configuration change. If Activity is created for the first time, starts GenerateFragment
         Fragment contentFragment = new GenerateFragment();
 
         if (savedInstanceState != null) {
@@ -43,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         transaction.commit();
     }
 
+    /** Handles back press with open drawer */
     @Override
     public void onBackPressed() {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
@@ -53,8 +60,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /** Handles selecting fragment through the drawer, performs appropriate FragmentTransaction */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        // if user clicked on currently checked item
         if (menuItem.isChecked()) {
             DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -98,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return false;
     }
 
+    /** Saves name of current fragment that needs to be restored after activity recreating */
     @Override
     protected void onSaveInstanceState(Bundle saveState) {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);

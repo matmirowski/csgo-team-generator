@@ -34,8 +34,13 @@ import pl.mateusz.csgoteamgenerator.MyDatabaseHelper;
 import pl.mateusz.csgoteamgenerator.Player;
 import pl.mateusz.csgoteamgenerator.R;
 
+/**
+ * Adapter used in RecyclerViews in all RoleFragments such as SniperFragment etc
+ */
 public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.ViewHolder> {
+    /** All players with fragment's role */
     private final Player[] players;
+    /** App's activity */
     private final Activity activity;
 
     public PlayerListAdapter(Player[] players, Activity activity) {
@@ -60,6 +65,11 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         return new ViewHolder(cv);
     }
 
+    /**
+     * Invoked when need to bind data to viewholder. Initially all CardViews have default player
+     * photo. Then through AsyncTasks Liquipedia's images and custom images are being
+     * put in the ImageViews.
+     */
     @Override
     public void onBindViewHolder(@NonNull PlayerListAdapter.ViewHolder viewHolder, int i) {
         CardView cv = viewHolder.cardView;
@@ -96,6 +106,9 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         return position;
     }
 
+    /**
+     * Contains data used in AsyncTasks
+     */
     private static class TaskData {
         String name;
         ImageView imageView;
@@ -106,6 +119,10 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         }
     }
 
+    /**
+     * Asynchronous task that gets player profile image from Liquipedia and then loads it into
+     * ImageView in a card through Glide library.
+     */
     private class AssignUrlImageToPlayerImageTask extends AsyncTask<TaskData, Void, String> {
         private ImageView imageView;
 
@@ -117,7 +134,8 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
 
         @Override
         protected void onPostExecute(String imageUrl) {
-            if (imageUrl != null && !imageUrl.equals("https://i.imgur.com/KQDl2wD.png") && !activity.isDestroyed()) {
+            if (imageUrl != null && !imageUrl.equals("https://i.imgur.com/KQDl2wD.png")
+                    && !activity.isDestroyed()) {
                 // url is not null and url isn't default player url
                 Log.d("LIST-IMAGEURL", imageUrl);
                 Glide.with(activity)
@@ -127,6 +145,9 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         }
     }
 
+    /**
+     * Asynchronous task that finds player custom image in database and then puts it into ImageView
+     */
     private class AssignCustomImageToPlayerImageTask extends AsyncTask<TaskData, Void, Drawable> {
         private ImageView imageView;
 
@@ -134,23 +155,9 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         protected Drawable doInBackground(TaskData... taskData) {
             String name = taskData[0].name;
             imageView = taskData[0].imageView;
-            MyDatabaseHelper helper = new MyDatabaseHelper(activity);
-            try {
-                SQLiteDatabase db = helper.getReadableDatabase();
-                Cursor cursor = db.query("AVATARS",
-                        new String[]{"IMAGE"},
-                        "NAME = ?",
-                        new String[]{name},
-                        null, null, null);
-                if (!cursor.moveToFirst())
-                    return null;
-                byte[] imageByteArray = cursor.getBlob(0);
-                cursor.close();
-                db.close();
-                return new BitmapDrawable(BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length));
-            } catch (SQLiteException e) {
-                return null;
-            }
+            Bitmap playerImage = DataHandler.getPlayerImageAsBitmap(
+                    new Player(name, null, 0, null), activity);
+            return new BitmapDrawable(activity.getResources(), playerImage);
         }
 
         @Override

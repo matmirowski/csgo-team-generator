@@ -46,14 +46,34 @@ import java.net.URL;
 import java.util.Random;
 
 public class GenerateFragment extends Fragment {
+    /** Array of all ImageViews containing player's profile image */
     private final ImageView[] playerImageViews = new ImageView[5];
+
+    /** Array of all TextViews containing player's nickname */
     private final TextView[] playerTextViews = new TextView[5];
+
+    /** Array of drawables holding player's image to be later put in ImageViews */
     private final Drawable[] playerImageDrawables = new Drawable[5];
+
+    /** Array of player nicknames to be later put in TextViews */
     private final String[] playerTemporaryNicknames = new String[5];
+
+    /** Gif from Glide holding generateButton animation */
     private RequestBuilder<Drawable> onClickDrawable;
+
+    /** States if button animation is currently playing */
     private boolean generating = false;
+
+    /** States if any team has been generated yet */
     private boolean wasGenerated = false;
+
+    /** Handler used to show players after button's animation finishes */
     private final Handler handler = new Handler();
+
+    /** Length of generateButton animation in ms */
+    private static final int ANIMATION_TIME = 6400;
+
+    // *** // *** // *** // *** //
 
     /**
      * Asynchronous task used to get random player for each spot in generated team from database.
@@ -95,6 +115,10 @@ public class GenerateFragment extends Fragment {
             return getRandomRiflersFromCursor(allRiflers, results);
         }
 
+        /**
+         * Starts PlayerImageURLTask or PlayerImageCustomTask depending on player's imagesource
+         * @param players array containing generated players
+         */
         @Override
         protected void onPostExecute(Player[] players) {
             if (players != null) {
@@ -103,6 +127,7 @@ public class GenerateFragment extends Fragment {
                 new PlayerImageURLTask().execute(new Player("Niko", null, -1,
                         "LIQUIPEDIA"));
 
+                // Start one of AsyncTasks depending on ImageSource
                 for (Player player : players) {
                     Log.d("INFO", "Generated playername: " + player.getName());
                     if (!player.getImageSource().equals(ImageSource.CUSTOM.toString()))
@@ -128,6 +153,7 @@ public class GenerateFragment extends Fragment {
      */
     private class PlayerImageURLTask extends AsyncTask<Player, Void, String> {
         private Player player;
+
         /**
          * @param params information about player
          * @return url of player image from liquipedia (or hltv default photo if there's no picture
@@ -142,6 +168,10 @@ public class GenerateFragment extends Fragment {
             return DataHandler.getPlayerImageUrl(player.getName());
         }
 
+        /**
+         * Starts PlayerImageToDrawable task if valid url has been found
+         * @param imageURL
+         */
         @Override
         protected void onPostExecute(String imageURL) {
 
@@ -187,6 +217,11 @@ public class GenerateFragment extends Fragment {
             }
         }
 
+        /**
+         * Assigns names and drawables containing player's picture to arrays temporary holding
+         * those data
+         * @param drawable player image
+         */
         @Override
         protected void onPostExecute(Drawable drawable) {
             if (drawable != null) {
@@ -206,31 +241,17 @@ public class GenerateFragment extends Fragment {
         }
     }
 
+    /**
+     * Asynchronous task that finds player's image in database and converts it from byte array to
+     * Drawable.
+     */
     private class PlayerImageCustomTask extends AsyncTask<Player, Void, Bitmap> {
         Player player;
 
         @Override
         protected Bitmap doInBackground(Player... players) {
             player = players[0];
-            SQLiteOpenHelper helper = new MyDatabaseHelper(getActivity());
-            try {
-                SQLiteDatabase db = helper.getReadableDatabase();
-                Cursor imageCursor = db.query("AVATARS",
-                        new String[]{"IMAGE"},
-                        "NAME = ?",
-                        new String[]{player.getName()},
-                        null, null, null);
-                if (imageCursor.moveToFirst()) {
-                    byte[] imageByteArray = imageCursor.getBlob(0);
-                    imageCursor.close();
-                    db.close();
-                    return BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
-                }
-                return null;
-            } catch (SQLiteException e) {
-                Log.e("ERR", "Error while getting bitmap image from database", e);
-                return null;
-            }
+            return DataHandler.getPlayerImageAsBitmap(player, getActivity());
         }
 
         @Override
@@ -258,6 +279,7 @@ public class GenerateFragment extends Fragment {
 
     /**
      * On start of the fragment:
+     * - reload fragment if configuration has been changed
      * - set onClickListener for generateButton
      * - fill arrays with ImageViews (with player photos) and TextViews (with nicknames)
      * - Setup toolbar
@@ -296,10 +318,14 @@ public class GenerateFragment extends Fragment {
             onClickDrawable.into(generateButton);
             new RandomNicknamesFromDatabaseTask().execute();
             generating = true;
-            handler.postDelayed(delayedShowPlayersRunnable, 6400);
+            handler.postDelayed(delayedShowPlayersRunnable, ANIMATION_TIME);
         }
     }
 
+    /**
+     * Runnable started by Handler after generateButton's animation finishes. Changes button image
+     * and shows players pictures and nicknames
+     */
     private final Runnable delayedShowPlayersRunnable = new Runnable() {
         @Override
         public void run() {
@@ -325,13 +351,15 @@ public class GenerateFragment extends Fragment {
      * Gets 3 random records from cursor containing all riflers.
      * Also checks if these records are individual (not repeated)
      * @param allRiflers array containing all riflers from database
-     * @param results string array containing sniper on index 0 and igl on index 4
-     * @return string array filled with all randomized players
+     * @param results Player array containing sniper on index 0 and igl on index 4
+     * @return string array filled with all randomly generated players
      */
     private Player[] getRandomRiflersFromCursor(Player[] allRiflers, Player[] results) {
         Random rand = new Random();
         int correctPlayers = 0;
         int index = 1;
+
+        // assign players to array if name isn't repeated
         while (correctPlayers < 3) {
             Player tempPlayer = allRiflers[rand.nextInt(allRiflers.length)];
             boolean isNameRepeated = false;
@@ -351,6 +379,9 @@ public class GenerateFragment extends Fragment {
         return results;
     }
 
+    /**
+     * Puts all Views containing player's image and nickname into global variables
+     */
     private void assignViewToArrays() {
         FragmentActivity rootActivity = getActivity();
         playerImageViews[0] = rootActivity.findViewById(R.id.frame_layout_player1)
@@ -370,6 +401,9 @@ public class GenerateFragment extends Fragment {
         playerTextViews[4] = rootActivity.findViewById(R.id.text_nick5);
     }
 
+    /**
+     * Initial setup of the toolbar.
+     */
     private void setupToolbar() {
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
@@ -383,6 +417,7 @@ public class GenerateFragment extends Fragment {
         toolbar.setBackgroundColor(getResources().getColor(R.color.appbar_color));
         toolbar.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
         DrawerLayout drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 getActivity(),
@@ -393,9 +428,11 @@ public class GenerateFragment extends Fragment {
         toggle.getDrawerArrowDrawable().setColor(Color.WHITE);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 
+    /** Loads menu items (and avoids showing more than 1 icon per action) */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (menu.size() == 0) {
@@ -405,6 +442,7 @@ public class GenerateFragment extends Fragment {
         }
     }
 
+    /** Handles share option */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (generating) {
@@ -420,12 +458,15 @@ public class GenerateFragment extends Fragment {
             case R.id.action_share:
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
+
+                // create message to share
                 String shareText = "Check out the team that will save Polish CS:GO Scene!";
                 StringBuilder builder = new StringBuilder(shareText);
                 for (int i = 0; i < 5; i++) {
                     builder.append("\n").append(playerTextViews[i].getText());
                 }
                 builder.append("\n").append("Generated via CSTeamRoulette");
+
                 intent.putExtra(Intent.EXTRA_TEXT, builder.toString());
                 Intent chosenIntent = Intent.createChooser(intent, "Share roster via...");
                 startActivity(chosenIntent);
@@ -434,6 +475,8 @@ public class GenerateFragment extends Fragment {
         }
     }
 
+    /** Puts one boolean in a Bundle to tell fragment's onActivityCreated method, that fragment
+     * is being restarted, not created for the first time. */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean("restarting", true);

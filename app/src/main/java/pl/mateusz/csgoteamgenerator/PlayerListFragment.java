@@ -28,10 +28,17 @@ import pl.mateusz.csgoteamgenerator.ListFragments.RiflerFragment;
 import pl.mateusz.csgoteamgenerator.ListFragments.SniperFragment;
 
 public class PlayerListFragment extends Fragment {
+    /** Current color of Appbar and NavigationBar */
     private int currentColor;
+
+    /** States if PlayerListFragment is currently visible (used in drawer listener) */
     private boolean currentFragmentVisible;
+
+    /** App's activity */
     private Activity activity;
 
+
+    /** Adapter for ViewPager */
     private class RolePagerAdapter extends FragmentStatePagerAdapter {
 
         public RolePagerAdapter(FragmentManager fm) {
@@ -78,6 +85,15 @@ public class PlayerListFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_player_list, container, false);
     }
 
+    /**
+     * Initial fragment configuration:
+     * - handle fragment recreation
+     * - set theme
+     * - setup viewpager
+     * - setup tabs
+     * - setup layout
+     * -
+     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
@@ -116,6 +132,40 @@ public class PlayerListFragment extends Fragment {
         setupLayout();
 
         // set pager onPageChangeListener to change theme depending on current ViewPager page
+        setupPagerChangeListener(pager, tabLayout);
+
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        currentFragmentVisible = false;
+    }
+
+    /**
+     * Invoked when clicked on FAB.
+     * Switches fragment to PlayerAddFragment.
+     */
+    private void onClickAddPlayer() {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.replace(R.id.fragment_container, new PlayerAddFragment());
+        ft.addToBackStack(null);
+        ft.commit();
+
+        // select item in drawer
+        NavigationView navView = getActivity().findViewById(R.id.nav_view);
+        navView.setCheckedItem(R.id.nav_add_player);
+    }
+
+    /**
+     * Sets pager change listener to change background color depending on current page
+     * @param pager fragment's pager
+     * @param tabLayout fragment's tablayout
+     */
+    private void setupPagerChangeListener(ViewPager pager, TabLayout tabLayout) {
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float v, int i1) {}
@@ -147,28 +197,11 @@ public class PlayerListFragment extends Fragment {
                 }
             }
         });
-        super.onActivityCreated(savedInstanceState);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-        currentFragmentVisible = false;
-    }
-
-    private void onClickAddPlayer() {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        ft.replace(R.id.fragment_container, new PlayerAddFragment());
-        ft.addToBackStack(null);
-        ft.commit();
-
-        // select item in drawer
-        NavigationView navView = getActivity().findViewById(R.id.nav_view);
-        navView.setCheckedItem(R.id.nav_add_player);
-    }
-
+    /**
+     * Initial toolbar setup
+     */
     private void setupLayout() {
         // hide default toolbar and set new with drawerlayout setup
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
@@ -208,6 +241,10 @@ public class PlayerListFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 
+    /**
+     * Puts one boolean in a Bundle to tell fragment's onActivityCreated method, that fragment
+     * is being restarted, not created for the first time.
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean("restarting", true);

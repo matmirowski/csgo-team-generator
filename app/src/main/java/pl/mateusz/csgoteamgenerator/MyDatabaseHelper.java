@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 4;
-    private static final String DB_NAME = "test8"; //todo change db name
+    private static final String DB_NAME = "test10"; //todo change db name
 
     public MyDatabaseHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -32,10 +32,14 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     private void updateDatabase(SQLiteDatabase db, int oldVersion) {
         if (oldVersion < 1) { // players with photos
+            addPlayer(db, "Siuhy", Role.IGL);
             addPlayer(db, "Sidney", Role.IGL);
             addPlayer(db, "phr", Role.IGL);
             addPlayer(db, "Oskarish", Role.IGL);
             addPlayer(db, "SZPERO", Role.IGL);
+            addPlayer(db, "Dycha", Role.Rifler);
+            addPlayer(db, "F1KU", Role.Rifler);
+            addPlayer(db, "Szejn", Role.Rifler);
             addPlayer(db, "Snax", Role.Rifler);
             addPlayer(db, "Furlan", Role.Rifler);
             addPlayer(db, "MICHU", Role.Rifler);
@@ -89,6 +93,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**
+     * Adds player to database with default ImageSource (liquipedia)
+     * @param db SQLite database
+     * @param name player's name
+     * @param role player's role
+     */
     public void addPlayer(SQLiteDatabase db, String name, Role role) {
         // IMAGESRC column is default = "LIQUIPEDIA"
         ContentValues values = new ContentValues();
@@ -98,6 +108,13 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.insert("PLAYERS", null, values);
     }
 
+    /**
+     * Adds player to database
+     * @param db SQLite database
+     * @param name player's name
+     * @param role player's role
+     * @param imgSrc player's image source
+     */
     public void addPlayer(SQLiteDatabase db, String name, Role role, ImageSource imgSrc) {
         ContentValues values = new ContentValues();
         values.put("NAME", name);
@@ -108,6 +125,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 role.toString() + " img: " + imgSrc.toString());
     }
 
+    /**
+     * Adds picture of the player to AVATARS table in database (saves it as byte array)
+     * @param db SQLite database
+     * @param name player's name
+     * @param img player's picture as byte array
+     */
     public void addAvatar(SQLiteDatabase db, String name, byte[] img) {
         ContentValues values = new ContentValues();
         values.put("NAME", name);
@@ -116,6 +139,12 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Log.d("DATABASE", "Added image to database: " + name);
     }
 
+    /**
+     * Removes player from database (and his avatar if exists)
+     * @param db SQLite databse
+     * @param name player's name
+     * @param imgSrc player's image source
+     */
     public void removePlayer(SQLiteDatabase db, String name, ImageSource imgSrc) {
         if (imgSrc == ImageSource.CUSTOM) {
             db.delete("AVATARS", "NAME = ?", new String[]{name});

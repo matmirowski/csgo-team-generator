@@ -16,6 +16,14 @@ import pl.mateusz.csgoteamgenerator.R;
 import pl.mateusz.csgoteamgenerator.Role;
 
 public abstract class AbstractRoleFragment extends Fragment {
+
+    /**
+     * Initial setup of the fragment, invoked in all child fragments (SniperFragment etc)
+     * @param role role of players displayed in List
+     * @param inflater layoutInflater of the layout
+     * @param container container holding current layout
+     * @return RecyclerView with added adapters etc
+     */
     protected View initialSetup(Role role, LayoutInflater inflater, ViewGroup container) {
         // get all players with specified role
         Player[] players = DataHandler.getPlayersFromDatabase(role, getActivity());
@@ -35,6 +43,7 @@ public abstract class AbstractRoleFragment extends Fragment {
             imagesInOneRow = 5;
         recycler.setLayoutManager(new GridLayoutManager(getActivity(), imagesInOneRow));
 
+        // set background
         Drawable backgroundDrawable = null;
         switch (role) {
             case Sniper:

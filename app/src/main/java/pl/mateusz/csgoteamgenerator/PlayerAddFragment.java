@@ -49,6 +49,7 @@ import java.io.InputStream;
 
 //todo after onClick fab in playerlist check role checkbox
 public class PlayerAddFragment extends Fragment {
+    // Views used in fragment's methods
     private EditText nickEditText;
     private RadioGroup roleGroup;
     private Switch liquipediaSwitch;
@@ -60,9 +61,15 @@ public class PlayerAddFragment extends Fragment {
     private ImageView playerImageView;
     private Bitmap playerImageBitmap;
     private Button uploadImageButton;
-    private Boolean photoSelected;
     private TextView nickCaption;
 
+    /** Indicates if player custom photo has been successfully selected from user's gallery */
+    private Boolean photoSelected;
+
+    /**
+     * Asynchronous task that checks if typed player nickname has correct player profile on
+     * Liquipedia
+     */
     private class CheckCorrectNicknameTask extends AsyncTask<String, Void, Boolean> {
         private String message = "";
         private String name;
@@ -81,6 +88,7 @@ public class PlayerAddFragment extends Fragment {
 
             String scriptTag = doc.getElementsByTag("script").get(0).toString();
             if (scriptTag.contains("Disambiguation pages")) {
+                // if there is more than 1 player with that nickname
                 message = "Invalid nickname: Too many players under this URL!";
                 Log.e("CHECK", message);
                 return false;
@@ -91,7 +99,7 @@ public class PlayerAddFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Boolean success) {
-            if (name.equals("ILLa")) { // test case initiated onStart to avoid Jsoup errors
+            if (name.equals("ILLa")) { // test case to avoid Jsoup errors
                 return;
             }
             if (success) {
@@ -110,6 +118,14 @@ public class PlayerAddFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_player_add, container, false);
     }
 
+    /**
+     * Initial configuration:
+     * - assign views to variables
+     * - handle fragment recreating
+     * - set theme and toolbar
+     * - assign onClickListeners
+     * - start test AsyncTask to avoid Jsoup error
+     */
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
@@ -154,6 +170,9 @@ public class PlayerAddFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
     }
 
+    /**
+     * Initial toolbar setup
+     * */
     private void setupToolbar() {
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
@@ -183,6 +202,9 @@ public class PlayerAddFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 
+    /**
+     * Invoked when clicked on Liquipedia switch. Hides unnecessary views and shows mandatory views
+     */
     private void onLiquipediaSourceClick() {
         if (liquipediaSwitch.isChecked()) {
             // Liquipedia image source
@@ -206,6 +228,9 @@ public class PlayerAddFragment extends Fragment {
         }
     }
 
+    /**
+     * Invoked when clicked on Default Switch. Hides unnecessary views and shows mandatory views
+     */
     private void onDefaultSourceClick() {
         if (defaultSwitch.isChecked()) {
             // default image source
@@ -218,6 +243,10 @@ public class PlayerAddFragment extends Fragment {
         }
     }
 
+    /**
+     * Invoked when clicked on Check button. Checks if player nickname has valid Liquipedia profile
+     * via CheckCorrectNicknameTask.
+     */
     private void onLiquipediaCheckClick() {
         if (!liquipediaSuccessCheckbox.isChecked()) {
             String name = nickEditText.getText().toString();
@@ -229,44 +258,22 @@ public class PlayerAddFragment extends Fragment {
         }
     }
 
+    /**
+     * Invoked when clicked on Add player Floating Action Button.
+     * Checks if all fields are correct and adds record in database.
+     * Then displays snackbar and moves to PlayerListFragment.
+     */
     private void onAddPlayerClick() {
         String name = nickEditText.getText().toString();
-        if (name.equals("")) {
-            // if name is empty
-            Toast.makeText(getActivity(), "Please enter nickname", Toast.LENGTH_SHORT).show();
+
+        // check if nickname is not empty etc
+        if (!checkFieldsInformationCorrectness(name))
             return;
-        }
-        if (liquipediaSwitch.isChecked() && !liquipediaSuccessCheckbox.isChecked()) {
-            // if user choose liquipedia but nickname isnt checked yet
-            Toast.makeText(getActivity(), "Please check if nickname is correct first",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (!liquipediaSwitch.isChecked() && !defaultSwitch.isChecked() && !photoSelected) {
-            // if user didn't select any photo from gallery
-            Toast.makeText(getActivity(), "Please select a image first",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         // get role
-        int roleId = roleGroup.getCheckedRadioButtonId();
-        Role role;
-        switch (roleId) {
-            case R.id.sniper_radio:
-                role = Role.Sniper;
-                break;
-            case R.id.rifler_radio:
-                role = Role.Rifler;
-                break;
-            case R.id.igl_radio:
-                role = Role.IGL;
-                break;
-            default:
-                Toast.makeText(getActivity(), "Please choose role first", Toast.LENGTH_SHORT)
-                        .show();
-                return;
-        }
+        Role role = getSelectedRole();
+        if (role == null)
+            return;
 
         // get image source
         ImageSource imgSource;
@@ -288,7 +295,7 @@ public class PlayerAddFragment extends Fragment {
                 if (playerImageBitmap == null) {
                     throw new IOException("Image bitmap is null");
                 }
-                byte[] imageAsByteArray = getBitmapAsByteArray(playerImageBitmap);
+                byte[] imageAsByteArray = DataHandler.getBitmapAsByteArray(playerImageBitmap);
                 if (imageAsByteArray != null) {
                     helper.addAvatar(db, name, imageAsByteArray);
                 }
@@ -313,14 +320,7 @@ public class PlayerAddFragment extends Fragment {
             addPlayerSnackbar.show();
 
             // move to PlayerListFragment
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            ft.replace(R.id.fragment_container, new PlayerListFragment());
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            ft.addToBackStack(null);
-            ft.commit();
-            // select appropriate item in drawer
-            NavigationView navView = getActivity().findViewById(R.id.nav_view);
-            navView.setCheckedItem(R.id.nav_player_list);
+            switchToPlayerListFragment();
         } catch (SQLiteException e) {
             Log.e("ERR", "Error while putting player into database", e);
             Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT).show();
@@ -330,12 +330,78 @@ public class PlayerAddFragment extends Fragment {
         }
     }
 
+    /**
+     * Performs FragmentTransaction to change current fragment to PlayerListFragment. Invoked after
+     * successfully adding new player.
+     */
+    private void switchToPlayerListFragment() {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.replace(R.id.fragment_container, new PlayerListFragment());
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.addToBackStack(null);
+        ft.commit();
+        // select appropriate item in drawer
+        NavigationView navView = getActivity().findViewById(R.id.nav_view);
+        navView.setCheckedItem(R.id.nav_player_list);
+    }
+
+    /**
+     * Checks if all fields like playername, role are valid and new player can be added
+     * @param name player's name
+     */
+    private boolean checkFieldsInformationCorrectness(String name) {
+        if (name.equals("")) {
+            // if name is empty
+            Toast.makeText(getActivity(), "Please enter nickname", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (liquipediaSwitch.isChecked() && !liquipediaSuccessCheckbox.isChecked()) {
+            // if user choose liquipedia but nickname isnt checked yet
+            Toast.makeText(getActivity(), "Please check if nickname is correct first",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!liquipediaSwitch.isChecked() && !defaultSwitch.isChecked() && !photoSelected) {
+            // if user didn't select any photo from gallery
+            Toast.makeText(getActivity(), "Please select a image first",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private Role getSelectedRole() {
+        int roleId = roleGroup.getCheckedRadioButtonId();
+        Role role;
+        switch (roleId) {
+            case R.id.sniper_radio:
+                role = Role.Sniper;
+                break;
+            case R.id.rifler_radio:
+                role = Role.Rifler;
+                break;
+            case R.id.igl_radio:
+                role = Role.IGL;
+                break;
+            default:
+                Toast.makeText(getActivity(), "Please choose role first", Toast.LENGTH_SHORT)
+                        .show();
+                return null;
+        }
+        return role;
+    }
+
+    /** Invoked when user clicks on SELECT CUSTOM IMAGE button */
     private void onUploadImageClick() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, 3);
     }
 
+    /**
+     * Invoked when image from gallery got loaded. Saves that image in playerImageBitmap variable
+     * and shows it in an ImageView
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -353,18 +419,11 @@ public class PlayerAddFragment extends Fragment {
         }
     }
 
-    private static byte[] getBitmapAsByteArray(Bitmap bitmap) {
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-            outputStream.close();
-            return outputStream.toByteArray();
-        } catch (IOException e) {
-            Log.e("ERR", "Can't convert bitmap to byte array", e);
-            return null;
-        }
-    }
 
+    /**
+     * Puts one boolean in a Bundle to tell fragment's onActivityCreated method, that fragment
+     * is being restarted, not created for the first time.
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean("restarting", true);
