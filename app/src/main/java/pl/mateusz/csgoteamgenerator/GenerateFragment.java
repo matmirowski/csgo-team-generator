@@ -2,12 +2,7 @@ package pl.mateusz.csgoteamgenerator;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -37,10 +32,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Random;

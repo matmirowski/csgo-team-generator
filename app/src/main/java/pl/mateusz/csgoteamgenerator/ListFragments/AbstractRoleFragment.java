@@ -2,7 +2,6 @@ package pl.mateusz.csgoteamgenerator.ListFragments;
 
 import android.content.DialogInterface;
 import android.content.res.Configuration;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import pl.mateusz.csgoteamgenerator.DataHandler;
-import pl.mateusz.csgoteamgenerator.MyDatabaseHelper;
 import pl.mateusz.csgoteamgenerator.Player;
 import pl.mateusz.csgoteamgenerator.R;
 import pl.mateusz.csgoteamgenerator.Role;
@@ -103,7 +101,6 @@ public abstract class AbstractRoleFragment extends Fragment {
                     if (success) {
                         adapter.removeItem(position);
                         adapter.notifyItemRemoved(position);
-                        adapter.notifyItemRangeChanged(position, adapter.getItemCount());
                         Toast.makeText(getActivity(), "Player removed", Toast.LENGTH_SHORT)
                                 .show();
                     } else {

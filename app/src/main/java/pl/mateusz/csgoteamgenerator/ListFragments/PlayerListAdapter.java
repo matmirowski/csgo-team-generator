@@ -1,11 +1,7 @@
 package pl.mateusz.csgoteamgenerator.ListFragments;
 
 import android.app.Activity;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -21,18 +17,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Element;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
-import lombok.Getter;
 import lombok.Setter;
 import pl.mateusz.csgoteamgenerator.DataHandler;
-import pl.mateusz.csgoteamgenerator.GenerateFragment;
-import pl.mateusz.csgoteamgenerator.MyDatabaseHelper;
 import pl.mateusz.csgoteamgenerator.Player;
 import pl.mateusz.csgoteamgenerator.R;
 
