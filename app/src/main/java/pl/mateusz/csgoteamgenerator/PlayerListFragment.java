@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import pl.mateusz.csgoteamgenerator.ListFragments.IglFragment;
 import pl.mateusz.csgoteamgenerator.ListFragments.RiflerFragment;
@@ -134,6 +135,9 @@ public class PlayerListFragment extends Fragment {
         // set pager onPageChangeListener to change theme depending on current ViewPager page
         setupPagerChangeListener(pager, tabLayout);
 
+        // show Toast with information about removing player
+        Toast.makeText(activity, "Click on the player to remove him", Toast.LENGTH_LONG)
+                .show();
         super.onActivityCreated(savedInstanceState);
     }
 
