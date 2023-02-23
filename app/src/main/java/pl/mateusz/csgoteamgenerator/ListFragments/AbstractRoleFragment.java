@@ -85,7 +85,8 @@ public abstract class AbstractRoleFragment extends Fragment {
 
             // AlertDialog's onClickListener
             DialogInterface.OnClickListener dialogClickListener = (DialogInterface dialog, int button) -> {
-                // check if there is enough players
+
+                // check if there are enough players
                 int playerCount = adapter.getItemCount();
                 if ((role == Role.Sniper && playerCount == 1) ||
                         (role == Role.Rifler && playerCount == 3) ||
