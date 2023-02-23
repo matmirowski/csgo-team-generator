@@ -36,7 +36,7 @@ public abstract class AbstractRoleFragment extends Fragment {
         RecyclerView recycler = (RecyclerView) inflater.inflate(R.layout.fragment_player_list_role,
                 container, false);
         PlayerListAdapter adapter = new PlayerListAdapter(players, getActivity());
-        setAdapterOnClickListener(adapter);
+        setAdapterOnClickListener(adapter, role);
         recycler.setAdapter(adapter);
 
         // amount of images in one row depends on orientation
@@ -80,11 +80,21 @@ public abstract class AbstractRoleFragment extends Fragment {
      * shown recyclerview.
      * @param adapter adapter of used RecyclerView
      */
-    protected void setAdapterOnClickListener(PlayerListAdapter adapter) {
+    protected void setAdapterOnClickListener(PlayerListAdapter adapter, Role role) {
         adapter.setListener((position, playerName, imageSource) -> {
 
             // AlertDialog's onClickListener
             DialogInterface.OnClickListener dialogClickListener = (DialogInterface dialog, int button) -> {
+                // check if there is enough players
+                int playerCount = adapter.getItemCount();
+                if ((role == Role.Sniper && playerCount == 1) ||
+                        (role == Role.Rifler && playerCount == 3) ||
+                        (role == Role.IGL && playerCount == 1)) {
+                    Toast.makeText(getActivity(), "Error: Not enough players left",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if (button == DialogInterface.BUTTON_POSITIVE) {
                     //Yes button clicked
                     boolean success = DataHandler
