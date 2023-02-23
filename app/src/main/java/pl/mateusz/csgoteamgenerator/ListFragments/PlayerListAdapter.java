@@ -42,9 +42,11 @@ import pl.mateusz.csgoteamgenerator.R;
 public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.ViewHolder> {
     /** All players with fragment's role */
     private Player[] players;
+
     /** App's activity */
     private final Activity activity;
 
+    /** Listener that allows communication with Fragment and setting onClickListener*/
     @Setter
     private Listener listener;
 

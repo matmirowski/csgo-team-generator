@@ -119,6 +119,7 @@ public class PlayerListFragment extends Fragment {
         // setup viewpager
         RolePagerAdapter adapter = new RolePagerAdapter(getActivity().getSupportFragmentManager());
         ViewPager pager = activity.findViewById(R.id.pager);
+        pager.setOffscreenPageLimit(3);
         pager.setAdapter(adapter);
 
         // set fab onClickListener
@@ -136,7 +137,7 @@ public class PlayerListFragment extends Fragment {
         setupPagerChangeListener(pager, tabLayout);
 
         // show Toast with information about removing player
-        Toast.makeText(activity, "Click on the player to remove him", Toast.LENGTH_LONG)
+        Toast.makeText(activity, "Click on the player to remove him", Toast.LENGTH_SHORT)
                 .show();
         super.onActivityCreated(savedInstanceState);
     }
