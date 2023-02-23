@@ -36,37 +36,7 @@ public abstract class AbstractRoleFragment extends Fragment {
         RecyclerView recycler = (RecyclerView) inflater.inflate(R.layout.fragment_player_list_role,
                 container, false);
         PlayerListAdapter adapter = new PlayerListAdapter(players, getActivity());
-
-        // set adapter's onClickListener
-        adapter.setListener((position, playerName, imageSource) -> {
-
-            // AlertDialog's onClickListener
-            DialogInterface.OnClickListener dialogClickListener = (DialogInterface dialog, int button) -> {
-                if (button == DialogInterface.BUTTON_POSITIVE) {
-                    //Yes button clicked
-                    boolean success = DataHandler
-                            .removePlayer(playerName, imageSource, getActivity());
-                    if (success) {
-                        recycler.removeViewAt(position);
-                        adapter.notifyItemRemoved(position);
-                        adapter.notifyItemRangeChanged(position, adapter.getItemCount()-1);
-                        Toast.makeText(getActivity(), "Player removed", Toast.LENGTH_SHORT)
-                                .show();
-                    } else {
-                        Toast.makeText(getActivity(), "Database unavailable",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            };
-
-            // creating AlertDialog
-            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-            dialog.setMessage("This player will be removed")
-                    .setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener)
-                    .show();
-        });
-
+        setAdapterOnClickListener(adapter);
         recycler.setAdapter(adapter);
 
         // amount of images in one row depends on orientation
@@ -101,5 +71,43 @@ public abstract class AbstractRoleFragment extends Fragment {
         }
 
         return recycler;
+    }
+
+    /**
+     * Sets adapter onClickListener in order to be able to remove player from playerlist.
+     * Shows AlertDialog to confirm action.
+     * If user confirms action, removes player from database, array in adapter and from currently
+     * shown recyclerview.
+     * @param adapter adapter of used RecyclerView
+     */
+    protected void setAdapterOnClickListener(PlayerListAdapter adapter) {
+        adapter.setListener((position, playerName, imageSource) -> {
+
+            // AlertDialog's onClickListener
+            DialogInterface.OnClickListener dialogClickListener = (DialogInterface dialog, int button) -> {
+                if (button == DialogInterface.BUTTON_POSITIVE) {
+                    //Yes button clicked
+                    boolean success = DataHandler
+                            .removePlayer(playerName, imageSource, getActivity());
+                    if (success) {
+                        adapter.removeItem(position);
+                        adapter.notifyItemRemoved(position);
+                        adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+                        Toast.makeText(getActivity(), "Player removed", Toast.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        Toast.makeText(getActivity(), "Database unavailable",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            };
+
+            // creating AlertDialog
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setMessage("This player will be removed")
+                    .setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener)
+                    .show();
+        });
     }
 }

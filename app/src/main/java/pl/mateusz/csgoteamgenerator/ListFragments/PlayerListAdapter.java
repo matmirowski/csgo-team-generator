@@ -41,7 +41,7 @@ import pl.mateusz.csgoteamgenerator.R;
  */
 public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.ViewHolder> {
     /** All players with fragment's role */
-    private final Player[] players;
+    private Player[] players;
     /** App's activity */
     private final Activity activity;
 
@@ -67,6 +67,21 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
             super(cardView);
             this.cardView = cardView;
         }
+    }
+
+    /**
+     * Removes player with index position from array
+     * @param position position of player in RecyclerView and array
+     */
+    public void removeItem(int position) {
+        Player[] newPlayers = new Player[players.length - 1];
+        for (int i = 0, j = 0; i < players.length; i++) {
+            if (i != position) {
+                newPlayers[j] = players[i];
+                j++;
+            }
+        }
+        players = newPlayers;
     }
 
     @NonNull
