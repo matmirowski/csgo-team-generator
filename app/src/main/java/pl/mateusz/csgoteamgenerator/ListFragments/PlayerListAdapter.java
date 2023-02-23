@@ -14,6 +14,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import lombok.Getter;
+import lombok.Setter;
 import pl.mateusz.csgoteamgenerator.DataHandler;
 import pl.mateusz.csgoteamgenerator.GenerateFragment;
 import pl.mateusz.csgoteamgenerator.MyDatabaseHelper;
@@ -43,9 +45,19 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
     /** App's activity */
     private final Activity activity;
 
+    @Setter
+    private Listener listener;
+
+    interface Listener {
+        void onClick(int position, String playerName, String imageSource);
+    }
+
     public PlayerListAdapter(Player[] players, Activity activity) {
         this.players = players;
         this.activity = activity;
+
+        // test case to avoid Jsoup error
+        new AssignUrlImageToPlayerImageTask().execute(new TaskData("Snax", null));
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -78,6 +90,17 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         Player player = players[i];
         text.setText(player.getName());
 
+        // set listener
+        cv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (listener != null)
+                    listener.onClick(viewHolder.getAdapterPosition(), player.getName(),
+                            player.getImageSource());
+            }
+        });
+
+        // set image
         if (player.getImageSource().equals("LIQUIPEDIA")) {
             new AssignUrlImageToPlayerImageTask().execute(new TaskData(player.getName(), imageView));
         }
@@ -135,7 +158,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         @Override
         protected void onPostExecute(String imageUrl) {
             if (imageUrl != null && !imageUrl.equals("https://i.imgur.com/KQDl2wD.png")
-                    && !activity.isDestroyed()) {
+                    && !activity.isDestroyed() && imageView != null) {
                 // url is not null and url isn't default player url
                 Log.d("LIST-IMAGEURL", imageUrl);
                 Glide.with(activity)

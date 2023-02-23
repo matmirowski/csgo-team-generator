@@ -306,7 +306,7 @@ public class PlayerAddFragment extends Fragment {
             Snackbar addPlayerSnackbar = Snackbar.make(getActivity().findViewById(R.id.drawer_layout),
                     snackbarText, Snackbar.LENGTH_LONG);
             addPlayerSnackbar.setAction("UNDO", e -> {
-                    helper.removePlayer(db, name, imgSource);
+                    helper.removePlayer(db, name, imgSource.toString());
                     Toast.makeText(getActivity(), "Player removed!", Toast.LENGTH_SHORT).show();
             });
             // close db after Snackbar is closed
@@ -418,7 +418,6 @@ public class PlayerAddFragment extends Fragment {
             }
         }
     }
-
 
     /**
      * Puts one boolean in a Bundle to tell fragment's onActivityCreated method, that fragment

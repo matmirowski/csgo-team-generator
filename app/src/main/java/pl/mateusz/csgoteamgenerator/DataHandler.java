@@ -157,4 +157,16 @@ public class DataHandler {
         }
     }
 
+    public static boolean removePlayer(String playerName, String imageSource, Activity activity) {
+        MyDatabaseHelper helper = new MyDatabaseHelper(activity);
+        try {
+            SQLiteDatabase db = helper.getWritableDatabase();
+            helper.removePlayer(db, playerName, imageSource);
+            db.close();
+            return true;
+        } catch (SQLiteException e) {
+            Log.e("DataHandler", "Can't remove player");
+            return false;
+        }
+    }
 }

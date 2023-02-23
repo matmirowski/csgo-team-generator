@@ -145,8 +145,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
      * @param name player's name
      * @param imgSrc player's image source
      */
-    public void removePlayer(SQLiteDatabase db, String name, ImageSource imgSrc) {
-        if (imgSrc == ImageSource.CUSTOM) {
+    public void removePlayer(SQLiteDatabase db, String name, String imgSrc) {
+        if (imgSrc.equals("CUSTOM")) {
             db.delete("AVATARS", "NAME = ?", new String[]{name});
         }
         db.delete("PLAYERS", "NAME = ?", new String[]{name});

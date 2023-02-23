@@ -1,8 +1,11 @@
 package pl.mateusz.csgoteamgenerator.ListFragments;
 
+import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import pl.mateusz.csgoteamgenerator.DataHandler;
+import pl.mateusz.csgoteamgenerator.MyDatabaseHelper;
 import pl.mateusz.csgoteamgenerator.Player;
 import pl.mateusz.csgoteamgenerator.R;
 import pl.mateusz.csgoteamgenerator.Role;
@@ -32,6 +36,37 @@ public abstract class AbstractRoleFragment extends Fragment {
         RecyclerView recycler = (RecyclerView) inflater.inflate(R.layout.fragment_player_list_role,
                 container, false);
         PlayerListAdapter adapter = new PlayerListAdapter(players, getActivity());
+
+        // set adapter's onClickListener
+        adapter.setListener((position, playerName, imageSource) -> {
+
+            // AlertDialog's onClickListener
+            DialogInterface.OnClickListener dialogClickListener = (DialogInterface dialog, int button) -> {
+                if (button == DialogInterface.BUTTON_POSITIVE) {
+                    //Yes button clicked
+                    boolean success = DataHandler
+                            .removePlayer(playerName, imageSource, getActivity());
+                    if (success) {
+                        recycler.removeViewAt(position);
+                        adapter.notifyItemRemoved(position);
+                        adapter.notifyItemRangeChanged(position, adapter.getItemCount()-1);
+                        Toast.makeText(getActivity(), "Player removed", Toast.LENGTH_SHORT)
+                                .show();
+                    } else {
+                        Toast.makeText(getActivity(), "Database unavailable",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            };
+
+            // creating AlertDialog
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setMessage("This player will be removed")
+                    .setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener)
+                    .show();
+        });
+
         recycler.setAdapter(adapter);
 
         // amount of images in one row depends on orientation
