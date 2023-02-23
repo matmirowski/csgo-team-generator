@@ -1,5 +1,6 @@
 package pl.mateusz.csgoteamgenerator;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -29,6 +30,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -194,7 +196,19 @@ public class PlayerAddFragment extends Fragment {
                 drawerLayout,
                 toolbar,
                 R.string.nav_open_drawer,
-                R.string.nav_close_drawer);
+                R.string.nav_close_drawer) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+
+                // hide keyboard when opened drawer
+                View view = getActivity().getCurrentFocus();
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+        };
         toggle.getDrawerArrowDrawable().setColor(Color.WHITE);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -321,6 +335,14 @@ public class PlayerAddFragment extends Fragment {
 
             // move to PlayerListFragment
             switchToPlayerListFragment();
+
+            // hide keyboard
+            View view = getActivity().getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
+                        Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
         } catch (SQLiteException e) {
             Log.e("ERR", "Error while putting player into database", e);
             Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT).show();

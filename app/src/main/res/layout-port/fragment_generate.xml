@@ -26,7 +26,7 @@
         layout="@layout/player_image_frame"
         android:layout_width="120dp"
         android:layout_height="150dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@+id/frame_layout_player3"
         app:layout_constraintTop_toTopOf="@+id/frame_layout_player3" />
 
@@ -45,7 +45,7 @@
         layout="@layout/player_image_frame"
         android:layout_width="120dp"
         android:layout_height="150dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@+id/frame_layout_player3"
         app:layout_constraintTop_toTopOf="@+id/frame_layout_player3" />
 
