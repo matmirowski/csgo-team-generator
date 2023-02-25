@@ -40,12 +40,12 @@
         android:layout_margin="16dp"
         android:adjustViewBounds="true"
         android:fadingEdgeLength="5dp"
-        android:src="@drawable/add_icon2"
+        android:src="@drawable/add_icon"
         app:borderWidth="0dp"
         android:backgroundTint="@android:color/transparent"
         app:rippleColor="@null"
-        app:fabCustomSize="72dp"
-        app:maxImageSize="86dp"
+        app:fabCustomSize="64dp"
+        app:maxImageSize="64dp"
         android:scaleType="centerCrop"
         app:backgroundTint="@color/transparent" />
 

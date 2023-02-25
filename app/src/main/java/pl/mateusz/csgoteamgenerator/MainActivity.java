@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            this.finishAffinity();
         }
     }
 
@@ -116,4 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         saveState.putString("saved_fragment_name", currentFragment);
         super.onSaveInstanceState(saveState);
     }
+
+
+
 }
