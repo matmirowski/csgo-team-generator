@@ -219,9 +219,8 @@ public class GenerateFragment extends Fragment {
             if (drawable != null) {
                 Log.d("INFO", "Index IMG: " + index);
 
-                // if player nickname contains ("_Polish_player), it needs to be cut
-                if (name.endsWith("_(Polish_player)"))
-                    name = name.substring(0, name.length() - 16);
+                // if player nickname contains ("***_player), it needs to be cut
+                name = DataHandler.removeSuffixFromPlayerName(name);
 
                 // assign drawable and name to temporary arrays
                 playerImageDrawables[index] = drawable;
@@ -468,6 +467,10 @@ public class GenerateFragment extends Fragment {
         }
     }
 
+    /**
+     * Plays sound from resources. Gets invoked every time user presses generate button (and there
+     * is no generating pending)
+     */
     private void playGenerateSound() {
         MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.generate_sound);
         mp.setOnCompletionListener(e -> {

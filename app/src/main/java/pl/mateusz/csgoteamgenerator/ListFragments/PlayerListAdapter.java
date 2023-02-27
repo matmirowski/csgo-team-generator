@@ -91,7 +91,8 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Vi
         TextView text = cv.findViewById(R.id.card_name);
         ImageView imageView = cv.findViewById(R.id.card_image);
         Player player = players[i];
-        text.setText(player.getName());
+        String name = DataHandler.removeSuffixFromPlayerName(player.getName());
+        text.setText(name);
 
         // set listener
         cv.setOnClickListener(new View.OnClickListener() {

@@ -65,4 +65,19 @@ class DataHandlerTest {
         assertEquals(expected, actual);
     }
 
+    @Test
+    void removeSuffixFromPlayerName_NameWithNoSuffix_ShouldReturnName() {
+        String name = "Snax";
+        String expected = "Snax";
+        String actual = DataHandler.removeSuffixFromPlayerName(name);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void removeSuffixFromPlayerName_NameWithPlayerSuffix_ShouldReturnFormattedName() {
+        String name = "Hades_(Polish_player)";
+        String expected = "Hades";
+        String actual = DataHandler.removeSuffixFromPlayerName(name);
+        assertEquals(expected, actual);
+    }
 }
