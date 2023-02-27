@@ -4,8 +4,6 @@
   <img src="https://i.imgur.com/uQ9KXlB.jpg"  width="600" height="340">
 </p>
 
-
-
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![Android Studio](https://img.shields.io/badge/Android%20Studio-3DDC84.svg?style=for-the-badge&logo=android-studio&logoColor=white)
@@ -20,12 +18,17 @@ Android app that finds 5 random players from database using their nicknames and 
 One day I was wondering how can we save Polish Counter Strike scene. Every month there was a shuffle changing top Polish teams' rosters, leading to no achievements.</br>
 So why don't you generate new top team? 
 
-**Features**:
-* Find 5 random players from your database divided into roles (Sniper, Rifler, In-game leader) </br>
-* Add pro players using their nickname (image will be downloaded from Liquipedia automatically)
-* Add custom players using image from your gallery
-* Browse and manage list of players (you can remove player you don't like)
-* Share your generated team via email, Messenger etc.
+## Features :sparkles: </br>
+
+:large_blue_diamond: Find 5 random players from your database divided into roles (Sniper, Rifler, In-game leader) </br>
+
+:large_blue_diamond: Add pro players using their nickname (image will be downloaded from Liquipedia automatically)</br>
+
+:large_blue_diamond: Add custom players using image from your gallery</br>
+
+:large_blue_diamond: Browse and manage list of players (you can remove player you don't like)</br>
+
+:large_blue_diamond: Share your generated team via email, Messenger etc.</br>
 
 <p align="center">
   <img width="460" height="300" src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZTI0ZGYxZjM5YzQwYWM0MDgzZDc3NGEwM2UwY2M3M2IyMDdkMTJhMSZjdD1n/ISb16bXpGxl4j9WL3X/giphy.gif">
