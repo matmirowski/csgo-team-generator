@@ -110,6 +110,12 @@ public class DataHandler {
         }
     }
 
+    /**
+     * Gets custom player's image from database and coverts it to bitmap
+     * @param player custom player that we need to find image of
+     * @param activity app's activity
+     * @return custom player's image as Bitmap instance
+     */
     public static Bitmap getPlayerImageAsBitmap(Player player, Activity activity) {
         SQLiteOpenHelper helper = new MyDatabaseHelper(activity);
         try {
@@ -148,6 +154,14 @@ public class DataHandler {
             return null;
         }
     }
+
+    /**
+     * Removes player from database
+     * @param playerName name of the player
+     * @param imageSource imagesource of the player (ImageSource enum toString())
+     * @param activity app's activity
+     * @return boolean that states if player was removed successfully
+     */
     public static boolean removePlayer(String playerName, String imageSource, Activity activity) {
         MyDatabaseHelper helper = new MyDatabaseHelper(activity);
         try {
@@ -159,5 +173,17 @@ public class DataHandler {
             Log.e("DataHandler", "Can't remove player");
             return false;
         }
+    }
+
+    /**
+     * Removes (***_player) suffix from player's name if it appears
+     * @param name name of the player
+     * @return name of the player with removed (***_player) suffix
+     */
+    public static String removeSuffixFromPlayerName(String name) {
+        int parenthesisIndex = name.indexOf("(");
+        if (parenthesisIndex == -1)
+            return name;
+        return name.substring(0, parenthesisIndex - 1);
     }
 }
