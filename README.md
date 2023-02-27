@@ -1,5 +1,6 @@
 # CSGO Team Generator
 
+<img src="https://i.imgur.com/uQ9KXlB.jpg"  width="600" height="340">
 
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=java&logoColor=white)
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
@@ -9,7 +10,6 @@
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 
 Android app that finds 5 random players from database using their nicknames and profile pictures from Liquipedia.net site. Allows to manage database containing players.
-
 
 ## Introduction :raised_hand_with_fingers_splayed:
 
@@ -22,6 +22,8 @@ So why don't you generate new top team?
 * Add custom players using image from your gallery
 * Browse and manage list of players (you can remove player you don't like)
 * Share your generated team via email, Messenger etc.
+
+<img src="https://i.imgur.com/FHNKrHH.mp4"  width="600" height="340">
 
 ## Goals of this project :white_check_mark:
 
