@@ -15,6 +15,7 @@ import org.jsoup.nodes.Element;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Random;
 
 public class DataHandler {
@@ -69,7 +70,6 @@ public class DataHandler {
         if (head == null) {
             return null;
         }
-
         // get only element with image url (index 12 of meta tags)
         String strMetaImg = head.getElementsByTag("meta").get(12).toString();
         Log.d("INFO", "player meta: " + strMetaImg);
@@ -148,7 +148,6 @@ public class DataHandler {
             return null;
         }
     }
-
     public static boolean removePlayer(String playerName, String imageSource, Activity activity) {
         MyDatabaseHelper helper = new MyDatabaseHelper(activity);
         try {

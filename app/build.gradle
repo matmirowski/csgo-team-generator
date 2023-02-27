@@ -5,9 +5,15 @@ plugins {
 android {
     compileSdk 32
 
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
+
     defaultConfig {
         applicationId "pl.mateusz.csgoteamgenerator"
-        minSdk 29
+        minSdk 28
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -39,14 +45,16 @@ dependencies {
         exclude group: "com.android.support"
     }
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
     // lombok
     compileOnly "org.projectlombok:lombok:1.18.26"
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
 
     // junit
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.0.3'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.0.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
