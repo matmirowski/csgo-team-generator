@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -310,6 +311,7 @@ public class GenerateFragment extends Fragment {
             new RandomNicknamesFromDatabaseTask().execute();
             generating = true;
             handler.postDelayed(delayedShowPlayersRunnable, ANIMATION_TIME);
+            playGenerateSound();
         }
     }
 
@@ -464,6 +466,15 @@ public class GenerateFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void playGenerateSound() {
+        MediaPlayer mp = MediaPlayer.create(getActivity(), R.raw.generate_sound);
+        mp.setOnCompletionListener(e -> {
+            mp.stop();
+            mp.release();
+        });
+        mp.start();
     }
 
     /** Puts one boolean in a Bundle to tell fragment's onActivityCreated method, that fragment
