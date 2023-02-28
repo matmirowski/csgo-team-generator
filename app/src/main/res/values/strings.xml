@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CSGOTeamGenerator</string>
+    <string name="app_name">CS TeamRoulette</string>
     <string name="sniper">Sniper</string>
     <string name="rifler">Rifler</string>
     <string name="igl">In-game leader</string>
