@@ -403,7 +403,7 @@ public class GenerateFragment extends Fragment {
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE)
-            toolbar.setTitle("Save Polish CS with your generated roster!");
+            toolbar.setTitle("Dominate CSGO scene with your generated roster!");
         else
             toolbar.setTitle("Generate your team!");
         toolbar.setBackgroundColor(getResources().getColor(R.color.appbar_color));
@@ -452,7 +452,7 @@ public class GenerateFragment extends Fragment {
                 intent.setType("text/plain");
 
                 // create message to share
-                String shareText = "Check out the team that will save Polish CS:GO Scene!";
+                String shareText = "Check out the team that will dominate CS:GO Scene!";
                 StringBuilder builder = new StringBuilder(shareText);
                 for (int i = 0; i < 5; i++) {
                     builder.append("\n").append(playerTextViews[i].getText());
