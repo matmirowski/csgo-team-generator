@@ -43,7 +43,6 @@ So why don't you generate new top team?
 * Use asynchronous tasks with data and network code
 * Allow user to add custom players with custom image from gallery (and store them in database)
 * Allow user to add pro players using only their Liquipedia nickname (and check if nickname is correct)
-* Avoid using ChatGPT, try to base on my notes and documentation
 * Publish app on Google Play
 
 <p align="center">
@@ -51,7 +50,7 @@ So why don't you generate new top team?
 </p>
 
 ## Technology :bulb:
-* **Android Studio** framework using Java
+* **Android Studio** IDE using Android API (code written in Java)
 * **Gradle** (managing project structure and dependencies)
 * **Lombok** (generating getters, setters)
 * **Glide** (loading GIF into ImageView, downloading image from URL)
