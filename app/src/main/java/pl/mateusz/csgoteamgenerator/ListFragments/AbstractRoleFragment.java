@@ -28,39 +28,18 @@ public abstract class AbstractRoleFragment extends Fragment {
      */
     protected View initialSetup(Role role, LayoutInflater inflater, ViewGroup container) {
         // get all players with specified role
-        Player[] players = DataHandler.getPlayersFromDatabase(role, getActivity());
+        Player[] players = getAllPlayersWithSpecifiedRole(role);
 
         // setup recycler
-        RecyclerView recycler = (RecyclerView) inflater.inflate(R.layout.fragment_player_list_role,
-                container, false);
-        PlayerListAdapter adapter = new PlayerListAdapter(players, getActivity());
-        setAdapterOnClickListener(adapter, role);
-        recycler.setAdapter(adapter);
+        RecyclerView recycler = getRecyclerSetWithAdapter(inflater, container, players, role);
 
         // amount of images in one row depends on orientation
-        int orientation = getActivity().getResources().getConfiguration().orientation;
-        int imagesInOneRow;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT)
-            imagesInOneRow = 2;
-        else
-            imagesInOneRow = 5;
-        recycler.setLayoutManager(new GridLayoutManager(getActivity(), imagesInOneRow));
+        setRecyclerItemsInRowDependingOnOrientation(recycler);
 
         // set background
-        Drawable backgroundDrawable = null;
-        switch (role) {
-            case Sniper:
-                backgroundDrawable = getResources().getDrawable(R.drawable.listback_sniper);
-                break;
-            case Rifler:
-                backgroundDrawable = getResources().getDrawable(R.drawable.listback_rifler);
-                break;
-            case IGL:
-                backgroundDrawable = getResources().getDrawable(R.drawable.listback_igl);
-                break;
-        }
-        recycler.setBackground(backgroundDrawable);
+        setRecyclerBackground(recycler, role);
 
+        // set default layout if there are no players
         if (players == null) {
             Toast.makeText(getActivity(), "Can't access players from database", Toast.LENGTH_SHORT)
                     .show();
@@ -83,14 +62,8 @@ public abstract class AbstractRoleFragment extends Fragment {
             DialogInterface.OnClickListener dialogClickListener = (DialogInterface dialog, int button) -> {
 
                 // check if there are enough players left in the recycler
-                int playerCount = adapter.getItemCount();
-                if ((role == Role.Sniper && playerCount == 1) ||
-                        (role == Role.Rifler && playerCount == 3) ||
-                        (role == Role.IGL && playerCount == 1)) {
-                    Toast.makeText(getActivity(), "Error: Not enough players left",
-                            Toast.LENGTH_SHORT).show();
+                if (checkPlayerCount(adapter, role))
                     return;
-                }
 
                 if (button == DialogInterface.BUTTON_POSITIVE) {
                     //Yes button clicked
@@ -109,11 +82,70 @@ public abstract class AbstractRoleFragment extends Fragment {
             };
 
             // creating AlertDialog
-            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-            dialog.setMessage("This player will be removed")
-                    .setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener)
-                    .show();
+            createRemovePlayerAlertDialog(dialogClickListener);
         });
     }
+
+    private Player[] getAllPlayersWithSpecifiedRole(Role role) {
+        return DataHandler.getPlayersFromDatabase(role, getActivity());
+    }
+
+    private RecyclerView getRecyclerSetWithAdapter(LayoutInflater inflater, ViewGroup container,
+                                                   Player[] players, Role role) {
+        RecyclerView recycler = (RecyclerView) inflater.inflate(R.layout.fragment_player_list_role,
+                container, false);
+        PlayerListAdapter adapter = new PlayerListAdapter(players, getActivity());
+        setAdapterOnClickListener(adapter, role);
+        recycler.setAdapter(adapter);
+        return recycler;
+    }
+
+
+    private void setRecyclerItemsInRowDependingOnOrientation(RecyclerView recycler) {
+        int orientation = getActivity().getResources().getConfiguration().orientation;
+        int imagesInOneRow;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT)
+            imagesInOneRow = 2;
+        else
+            imagesInOneRow = 5;
+        recycler.setLayoutManager(new GridLayoutManager(getActivity(), imagesInOneRow));
+    }
+
+    private void setRecyclerBackground(RecyclerView recycler, Role role) {
+        Drawable backgroundDrawable = null;
+        switch (role) {
+            case Sniper:
+                backgroundDrawable = getResources().getDrawable(R.drawable.listback_sniper);
+                break;
+            case Rifler:
+                backgroundDrawable = getResources().getDrawable(R.drawable.listback_rifler);
+                break;
+            case IGL:
+                backgroundDrawable = getResources().getDrawable(R.drawable.listback_igl);
+                break;
+        }
+        recycler.setBackground(backgroundDrawable);
+    }
+
+    private AlertDialog.Builder createRemovePlayerAlertDialog(DialogInterface.OnClickListener dialogClickListener) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setMessage("This player will be removed")
+                .setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener)
+                .show();
+        return dialog;
+    }
+
+    private boolean checkPlayerCount(PlayerListAdapter adapter, Role role) {
+        int playerCount = adapter.getItemCount();
+        if ((role == Role.Sniper && playerCount == 1) ||
+                (role == Role.Rifler && playerCount == 3) ||
+                (role == Role.IGL && playerCount == 1)) {
+            Toast.makeText(getActivity(), "Error: Not enough players left",
+                    Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return false;
+    }
+
 }
