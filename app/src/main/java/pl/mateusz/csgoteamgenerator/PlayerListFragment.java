@@ -26,7 +26,7 @@ import pl.mateusz.csgoteamgenerator.ListFragments.IglFragment;
 import pl.mateusz.csgoteamgenerator.ListFragments.RiflerFragment;
 import pl.mateusz.csgoteamgenerator.ListFragments.SniperFragment;
 
-public class PlayerListFragment extends Fragment {
+public class PlayerListFragment extends Fragment implements Namable {
     /** Current color of Appbar and NavigationBar */
     private int currentColor;
 
@@ -82,6 +82,11 @@ public class PlayerListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_player_list, container, false);
+    }
+
+    @Override
+    public String getName() {
+        return "PlayerListFragment";
     }
 
     /**

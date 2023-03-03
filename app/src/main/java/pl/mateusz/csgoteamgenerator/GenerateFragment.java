@@ -37,7 +37,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Random;
 
-public class GenerateFragment extends Fragment {
+public class GenerateFragment extends Fragment implements Namable {
     /** Array of all ImageViews containing player's profile image */
     private final ImageView[] playerImageViews = new ImageView[5];
 
@@ -266,6 +266,11 @@ public class GenerateFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_generate, container, false);
+    }
+
+    @Override
+    public String getName() {
+        return "GenerateFragment";
     }
 
     /**

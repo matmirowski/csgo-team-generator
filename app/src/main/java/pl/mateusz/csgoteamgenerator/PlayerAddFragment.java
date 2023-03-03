@@ -44,7 +44,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class PlayerAddFragment extends Fragment {
+public class PlayerAddFragment extends Fragment implements Namable {
     // Views used in fragment's methods
     private EditText nickEditText;
     private RadioGroup roleGroup;
@@ -112,6 +112,11 @@ public class PlayerAddFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_player_add, container, false);
+    }
+
+    @Override
+    public String getName() {
+        return "PlayerAddFragment";
     }
 
     /**
