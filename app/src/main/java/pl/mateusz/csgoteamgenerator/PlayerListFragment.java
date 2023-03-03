@@ -109,10 +109,7 @@ public class PlayerListFragment extends Fragment {
         currentFragmentVisible = true;
         activity = getActivity();
 
-        // set theme
-        activity.getWindow().setNavigationBarColor(getResources().getColor(R.color.sniper));
-        activity.getWindow().setStatusBarColor(Color.BLACK);
-        currentColor = getResources().getColor(R.color.sniper);
+        setThemeColors();
 
         // setup viewpager
         RolePagerAdapter adapter = new RolePagerAdapter(getActivity().getSupportFragmentManager());
@@ -129,7 +126,7 @@ public class PlayerListFragment extends Fragment {
         tabLayout.setupWithViewPager(pager);
         tabLayout.setBackgroundColor(getResources().getColor(R.color.sniper));
 
-        setupLayout();
+        setupToolbar();
 
         // set pager onPageChangeListener to change theme depending on current ViewPager page
         setupPagerChangeListener(pager, tabLayout);
@@ -205,7 +202,7 @@ public class PlayerListFragment extends Fragment {
     /**
      * Initial toolbar setup
      */
-    private void setupLayout() {
+    private void setupToolbar() {
         // hide default toolbar and set new with drawerlayout setup
         if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
@@ -254,4 +251,9 @@ public class PlayerListFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
+    private void setThemeColors() {
+        activity.getWindow().setNavigationBarColor(getResources().getColor(R.color.sniper));
+        activity.getWindow().setStatusBarColor(Color.BLACK);
+        currentColor = getResources().getColor(R.color.sniper);
+    }
 }

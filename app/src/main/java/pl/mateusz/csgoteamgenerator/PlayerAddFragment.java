@@ -135,31 +135,14 @@ public class PlayerAddFragment extends Fragment {
             ft2.commit();
         }
 
-        // assign views to variables
-        nickEditText = getActivity().findViewById(R.id.add_player_nick_text);
-        roleGroup = getActivity().findViewById(R.id.role_group);
-        liquipediaSwitch = getActivity().findViewById(R.id.add_player_liquipedia_switch);
-        defaultSwitch = getActivity().findViewById(R.id.add_player_default_switch);
-        liquipediaHint = getActivity().findViewById(R.id.add_player_liquipedia_hint);
-        liquipediaCheckButton = getActivity().findViewById(R.id.add_player_liquipedia_check_button);
-        liquipediaSuccessCheckbox = getActivity()
-                .findViewById(R.id.add_player_liquipedia_success_checkbox);
-        fab = getActivity().findViewById(R.id.add_player_fab);
-        playerImageView = getActivity().findViewById(R.id.add_player_image);
-        uploadImageButton = getActivity().findViewById(R.id.add_player_upload_button);
-        nickCaption = getActivity().findViewById(R.id.add_player_nick_caption);
+        assignViewsToVariables();
 
         // theme and toolbar
         getActivity().getWindow().setNavigationBarColor(getResources().getColor(R.color.appbar_color));
         getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.appbar_color));
         setupToolbar();
 
-        // assign onClickListeners
-        liquipediaSwitch.setOnClickListener(e -> onLiquipediaSourceClick());
-        defaultSwitch.setOnClickListener(e -> onDefaultSourceClick());
-        liquipediaCheckButton.setOnClickListener(e -> onLiquipediaCheckClick());
-        fab.setOnClickListener(e -> onAddPlayerClick());
-        uploadImageButton.setOnClickListener(e -> onUploadImageClick());
+        assignOnClickListeners();
 
         // test case to avoid Jsoup errors
         new CheckCorrectNicknameTask().execute("ILLa");
@@ -194,13 +177,7 @@ public class PlayerAddFragment extends Fragment {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-
-                // hide keyboard when opened drawer
-                View view = getActivity().getCurrentFocus();
-                if (view != null) {
-                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                }
+                hideKeyboard();
             }
         };
         toggle.getDrawerArrowDrawable().setColor(Color.WHITE);
@@ -330,13 +307,7 @@ public class PlayerAddFragment extends Fragment {
             // move to PlayerListFragment
             switchToPlayerListFragment();
 
-            // hide keyboard
-            View view = getActivity().getCurrentFocus();
-            if (view != null) {
-                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-            }
+            hideKeyboard();
         } catch (SQLiteException e) {
             Log.e("ERR", "Error while putting player into database", e);
             Toast.makeText(getActivity(), "Database unavailable", Toast.LENGTH_SHORT).show();
@@ -443,5 +414,37 @@ public class PlayerAddFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putBoolean("restarting", true);
         super.onSaveInstanceState(outState);
+    }
+
+    private void hideKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    private void assignViewsToVariables() {
+        nickEditText = getActivity().findViewById(R.id.add_player_nick_text);
+        roleGroup = getActivity().findViewById(R.id.role_group);
+        liquipediaSwitch = getActivity().findViewById(R.id.add_player_liquipedia_switch);
+        defaultSwitch = getActivity().findViewById(R.id.add_player_default_switch);
+        liquipediaHint = getActivity().findViewById(R.id.add_player_liquipedia_hint);
+        liquipediaCheckButton = getActivity().findViewById(R.id.add_player_liquipedia_check_button);
+        liquipediaSuccessCheckbox = getActivity()
+                .findViewById(R.id.add_player_liquipedia_success_checkbox);
+        fab = getActivity().findViewById(R.id.add_player_fab);
+        playerImageView = getActivity().findViewById(R.id.add_player_image);
+        uploadImageButton = getActivity().findViewById(R.id.add_player_upload_button);
+        nickCaption = getActivity().findViewById(R.id.add_player_nick_caption);
+    }
+
+    private void assignOnClickListeners() {
+        liquipediaSwitch.setOnClickListener(e -> onLiquipediaSourceClick());
+        defaultSwitch.setOnClickListener(e -> onDefaultSourceClick());
+        liquipediaCheckButton.setOnClickListener(e -> onLiquipediaCheckClick());
+        fab.setOnClickListener(e -> onAddPlayerClick());
+        uploadImageButton.setOnClickListener(e -> onUploadImageClick());
     }
 }
