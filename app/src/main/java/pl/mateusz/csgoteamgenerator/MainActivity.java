@@ -105,18 +105,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     /** Saves name of current fragment that needs to be restored after activity recreating */
     @Override
     protected void onSaveInstanceState(Bundle saveState) {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        String currentFragment;
-        if (fragment instanceof GenerateFragment)
-            currentFragment = "GenerateFragment";
-        else if (fragment instanceof  PlayerListFragment)
-            currentFragment = "PlayerListFragment";
+        Namable fragment = (Namable) getSupportFragmentManager()
+                .findFragmentById(R.id.fragment_container);
+        String fragmentName;
+        if (fragment == null)
+            fragmentName = "GenerateFragment";
         else
-            currentFragment = "PlayerAddFragment";
-        saveState.putString("saved_fragment_name", currentFragment);
+            fragmentName = fragment.getName();
+        saveState.putString("saved_fragment_name", fragmentName);
         super.onSaveInstanceState(saveState);
     }
-
-
 
 }
