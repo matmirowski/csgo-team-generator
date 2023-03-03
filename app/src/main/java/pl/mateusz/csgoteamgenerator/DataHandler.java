@@ -30,12 +30,12 @@ public class DataHandler {
      */
     public static Player[] getPlayersFromDatabase(Role role, Context context) {
         SQLiteOpenHelper helper = new MyDatabaseHelper(context);
-        try {
-            SQLiteDatabase db = helper.getReadableDatabase();
-            Cursor cursor = db.query("PLAYERS",
-                    new String[]{"NAME, IMAGESRC"}, "ROLE = ?",
-                    new String[]{role.toString()},
-                    null, null, null);
+        try (SQLiteDatabase db = helper.getReadableDatabase();
+             Cursor cursor = db.query("PLAYERS",
+                     new String[]{"NAME, IMAGESRC"}, "ROLE = ?",
+                     new String[]{role.toString()},
+                     null, null, null)
+        ) {
             if (!cursor.moveToFirst()) {
                 Log.e("PLAYERLIST", "Can't move to first record in cursor");
                 return null;
@@ -48,8 +48,6 @@ public class DataHandler {
                 players[i] = new Player(cursor.getString(0), null, i, cursor.getString(1));
                 i++;
             } while (cursor.moveToNext());
-            cursor.close();
-            db.close();
             return players;
         } catch (SQLiteException e) {
             Log.e("ERR", "Error while setting up adapter", e);
@@ -118,17 +116,15 @@ public class DataHandler {
      */
     public static Bitmap getPlayerImageAsBitmap(Player player, Activity activity) {
         SQLiteOpenHelper helper = new MyDatabaseHelper(activity);
-        try {
-            SQLiteDatabase db = helper.getReadableDatabase();
-            Cursor imageCursor = db.query("AVATARS",
-                    new String[]{"IMAGE"},
-                    "NAME = ?",
-                    new String[]{player.getName()},
-                    null, null, null);
+        try (SQLiteDatabase db = helper.getReadableDatabase();
+             Cursor imageCursor = db.query("AVATARS",
+                     new String[]{"IMAGE"},
+                     "NAME = ?",
+                     new String[]{player.getName()},
+                     null, null, null)
+        ) {
             if (imageCursor.moveToFirst()) {
                 byte[] imageByteArray = imageCursor.getBlob(0);
-                imageCursor.close();
-                db.close();
                 return BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length);
             }
             return null;
@@ -144,10 +140,8 @@ public class DataHandler {
      * @return byte array that represents bitmap
      */
     public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             bitmap.compress(Bitmap.CompressFormat.PNG, 0, outputStream);
-            outputStream.close();
             return outputStream.toByteArray();
         } catch (IOException e) {
             Log.e("ERR", "Can't convert bitmap to byte array", e);
@@ -164,10 +158,8 @@ public class DataHandler {
      */
     public static boolean removePlayer(String playerName, String imageSource, Activity activity) {
         MyDatabaseHelper helper = new MyDatabaseHelper(activity);
-        try {
-            SQLiteDatabase db = helper.getWritableDatabase();
+        try (SQLiteDatabase db = helper.getWritableDatabase()) {
             helper.removePlayer(db, playerName, imageSource);
-            db.close();
             return true;
         } catch (SQLiteException e) {
             Log.e("DataHandler", "Can't remove player");
