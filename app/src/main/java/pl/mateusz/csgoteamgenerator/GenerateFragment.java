@@ -318,25 +318,22 @@ public class GenerateFragment extends Fragment {
      * Runnable started by Handler after generateButton's animation finishes. Changes button image
      * and shows players pictures and nicknames
      */
-    private final Runnable delayedShowPlayersRunnable = new Runnable() {
-        @Override
-        public void run() {
-            generating = false;
-            // change generateButton gif to static image
-            try {
-                ImageView generateButton = getActivity().findViewById(R.id.button_generate);
-                generateButton.setImageResource(R.drawable.generate_static);
+    private final Runnable delayedShowPlayersRunnable = () -> {
+        generating = false;
+        // change generateButton gif to static image
+        try {
+            ImageView generateButton = getActivity().findViewById(R.id.button_generate);
+            generateButton.setImageResource(R.drawable.generate_static);
 
-                // change player textviews and imageviews
-                for (int i = 0; i < 5; i++) {
-                    playerTextViews[i].setText(playerTemporaryNicknames[i]);
-                    playerImageViews[i].setImageDrawable(playerImageDrawables[i]);
-                }
-            } catch (NullPointerException e) {
-                Log.e("ERR", "Activity doesn't exist - can't display player images", e);
+            // change player textviews and imageviews
+            for (int i = 0; i < 5; i++) {
+                playerTextViews[i].setText(playerTemporaryNicknames[i]);
+                playerImageViews[i].setImageDrawable(playerImageDrawables[i]);
             }
-
+        } catch (NullPointerException e) {
+            Log.e("ERR", "Activity doesn't exist - can't display player images", e);
         }
+
     };
 
     /**

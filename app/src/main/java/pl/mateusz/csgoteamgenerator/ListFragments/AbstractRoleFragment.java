@@ -27,16 +27,9 @@ public abstract class AbstractRoleFragment extends Fragment {
      * @return RecyclerView with added adapters etc
      */
     protected View initialSetup(Role role, LayoutInflater inflater, ViewGroup container) {
-        // get all players with specified role
         Player[] players = getAllPlayersWithSpecifiedRole(role);
-
-        // setup recycler
         RecyclerView recycler = getRecyclerSetWithAdapter(inflater, container, players, role);
-
-        // amount of images in one row depends on orientation
         setRecyclerItemsInRowDependingOnOrientation(recycler);
-
-        // set background
         setRecyclerBackground(recycler, role);
 
         // set default layout if there are no players
