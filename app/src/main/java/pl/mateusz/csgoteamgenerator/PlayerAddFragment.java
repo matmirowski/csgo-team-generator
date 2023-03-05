@@ -60,7 +60,7 @@ public class PlayerAddFragment extends Fragment implements Namable {
     private TextView nickCaption;
 
     /** Indicates if player custom photo has been successfully selected from user's gallery */
-    private Boolean photoSelected;
+    private Boolean photoSelected = false;
 
     /**
      * Asynchronous task that checks if typed player nickname has correct player profile on
