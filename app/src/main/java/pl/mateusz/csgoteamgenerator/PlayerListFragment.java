@@ -214,7 +214,7 @@ public class PlayerListFragment extends Fragment implements Namable {
         }
         Toolbar listToolbar = getActivity().findViewById(R.id.player_list_toolbar);
         listToolbar.setBackgroundColor(getResources().getColor(R.color.dark_gray));
-        listToolbar.setTitle("List of best Polish players");
+        listToolbar.setTitle("List of best pro players");
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(listToolbar);
 
