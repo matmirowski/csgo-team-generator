@@ -13,6 +13,10 @@
 
 Android app that finds 5 random players from database using their nicknames and profile pictures from Liquipedia.net site. Allows to manage database containing players.
 
+## Google Play :trophy:
+
+[Download app from Google Play](https://play.google.com/store/apps/details?id=pl.mateusz.csgoteamgenerator)
+
 ## Introduction :raised_hand_with_fingers_splayed:
 
 One day I was wondering how can we save Polish Counter Strike scene. Every month there was a shuffle changing top Polish teams' rosters, leading to no achievements.</br>
